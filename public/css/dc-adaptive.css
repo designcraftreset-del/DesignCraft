@@ -1,0 +1,680 @@
+/**
+ * DesignCraft adaptive layout (dc-*)
+ * Внешний вид на ПК сохранён ~95%, добавлен полноценный адаптив.
+ * Цвета и стиль не меняются.
+ */
+
+/* ---- Контейнер ---- */
+.dc-container {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+/* ---- Шапка ---- */
+.dc-header {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    width: 100%;
+    background: #fff;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.dc-header__inner {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 10px 20px;
+}
+
+.dc-header__inner .dc-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    width: 100%;
+    padding: 0 20px;
+}
+
+.dc-header__logo a {
+    background-image: linear-gradient(to right, #1D4ED8 0%, #3B82F6 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    font-weight: 700;
+    font-size: 24px;
+    text-decoration: none;
+}
+
+.dc-nav {
+    display: flex;
+    gap: 25px;
+    align-items: center;
+}
+
+.dc-nav__link {
+    color: #374151;
+    font-weight: 500;
+    transition: color 0.3s;
+    text-decoration: none;
+}
+
+.dc-nav__link:hover {
+    color: #2563eb;
+}
+
+.dc-header__user {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.dc-header__user-name-text {
+    display: inline-block;
+    max-width: none;
+    overflow: visible;
+    text-overflow: clip;
+    white-space: nowrap;
+}
+
+/* Светлая тема: белый текст имени в шапке */
+body:not(.dark-theme) .dc-header__user-name-text {
+    color: #fff;
+}
+
+/* Ссылки пользователя в бургер-меню (видны только на мобильных) */
+.dc-nav__user-links {
+    display: none;
+    flex-direction: column;
+    gap: 0;
+    width: 100%;
+    padding-top: 0.5rem;
+    margin-top: 0.5rem;
+    border-top: 1px solid #e5e7eb;
+}
+.dc-nav__user-name {
+    display: block;
+    padding: 12px 0;
+    font-weight: 600;
+    color: #374151;
+    font-size: 0.9rem;
+}
+.dc-nav__link--user {
+    padding: 12px 0 !important;
+    border-bottom: 1px solid #f3f4f6;
+    color: #374151 !important;
+}
+.dc-nav__link--user:hover {
+    color: #1d4ed8 !important;
+}
+.dc-nav__link--logout {
+    color: #dc2626 !important;
+}
+.dc-nav__link--logout:hover {
+    color: #b91c1c !important;
+}
+body.dark-theme .dc-nav__user-name { color: #e2e8f0; }
+body.dark-theme .dc-nav__link--user { color: #e2e8f0 !important; }
+body.dark-theme .dc-nav__link--user:hover { color: #93c5fd !important; }
+body.dark-theme .dc-nav__user-links { border-top-color: #334155; }
+body.dark-theme .dc-nav__link--user { border-bottom-color: #334155; }
+
+/* Кнопка бургер (показывается на мобильных) */
+.dc-header__toggler {
+    display: none;
+    padding: 8px;
+    border: 1px solid #e5e7eb;
+    border-radius: 8px;
+    background: #fff;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+}
+
+.dc-header__toggler-icon {
+    width: 24px;
+    height: 2px;
+    background: #374151;
+    position: relative;
+}
+
+.dc-header__toggler-icon::before,
+.dc-header__toggler-icon::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    width: 24px;
+    height: 2px;
+    background: #374151;
+}
+
+.dc-header__toggler-icon::before { top: -7px; }
+.dc-header__toggler-icon::after { bottom: -7px; }
+
+/* ---- Main ---- */
+.dc-main {
+    flex: 1 0 auto;
+    margin-top: 55px;
+}
+
+.dc-main__inner {
+    min-height: 0;
+}
+
+/* ---- Секция (общая) ---- */
+.dc-section {
+    width: 100%;
+}
+
+/* Секция hero (градиентный баннер) — аналог .hero_two */
+.dc-section--hero {
+    position: relative;
+    width: 100%;
+}
+
+.dc-section--hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: linear-gradient(to right, #1E3A8A 0%, #1E40AF 50%, #1D4ED8 100%);
+}
+
+.dc-hero__block {
+    max-width: 48rem;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding-top: 8rem;
+    padding-bottom: 8rem;
+}
+
+.dc-hero__title {
+    color: #fff;
+    font-size: 60px;
+    line-height: 1.1;
+    font-weight: 700;
+    text-align: center;
+}
+
+.dc-hero__subtitle {
+    color: #DBEAFE;
+    font-size: 20px;
+    font-weight: 400;
+    text-align: center;
+}
+
+/* Секция контента с отступами */
+.dc-section--content {
+    padding-top: 6rem;
+    padding-bottom: 6rem;
+}
+
+/* Блок истории (две колонки) */
+.dc-history__row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 30px;
+}
+
+.dc-history__text {
+    max-width: 50%;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dc-history__text-title {
+    color: #0062ff;
+    font-size: 30px;
+    font-weight: 700;
+}
+
+.dc-history__text-body {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.dc-history__text-body p {
+    color: #374151;
+    font-size: 16px;
+    font-weight: 400;
+}
+
+.dc-history__img-wrap {
+    max-width: 50%;
+    max-height: 584px;
+    position: relative;
+}
+
+.dc-history__img {
+    width: 100%;
+    max-height: 584px;
+    border-radius: 1.5rem;
+    object-fit: cover;
+}
+
+.dc-history__img-badge {
+    position: absolute;
+    bottom: 17%;
+    right: 20%;
+    background: #2563EB;
+    color: #fff;
+    font-weight: 700;
+    font-size: 24px;
+    width: 8rem;
+    height: 8rem;
+    border-radius: 9999px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+}
+
+/* Сетки */
+.dc-grid {
+    display: grid;
+    gap: 24px;
+}
+
+.dc-grid--2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.dc-grid--3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.dc-grid--4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+/* Футер CTA */
+.dc-footer-cta {
+    width: 100%;
+    position: relative;
+}
+
+.dc-footer-cta::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background-image: linear-gradient(to right, #1E3A8A 0%, #1E40AF 50%, #1D4ED8 100%);
+}
+
+.dc-footer-cta__inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    padding: 4rem 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 20px;
+    text-align: center;
+}
+
+.dc-footer-cta__title {
+    color: #fff;
+    font-weight: 700;
+    font-size: 1.5rem;
+}
+
+.dc-footer-cta__text {
+    color: #DBEAFE;
+    font-size: 1rem;
+    max-width: 48rem;
+}
+
+.dc-footer-cta__buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    justify-content: center;
+}
+
+.dc-footer-cta__btn {
+    display: inline-block;
+    padding: 12px 24px;
+    border-radius: 10px;
+    font-weight: 500;
+    font-size: 14px;
+    text-decoration: none;
+    transition: 0.3s;
+}
+
+.dc-footer-cta__btn--primary {
+    background-image: linear-gradient(to right, #1D4ED8 0%, #3B82F6 100%);
+    color: #fff;
+}
+
+.dc-footer-cta__btn--secondary {
+    color: #fff;
+    box-shadow: 0 0 0 1px inset rgba(255,255,255,0.5);
+}
+
+/* Нижний футер */
+.dc-footer {
+    background: #1e293b;
+    color: #94a3b8;
+    padding: 3rem 20px 2rem;
+}
+
+.dc-footer__inner {
+    max-width: 80rem;
+    margin: 0 auto;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 2rem;
+}
+
+.dc-footer__col-title {
+    color: #f1f5f9;
+    font-weight: 700;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.dc-footer__col a,
+.dc-footer__col .dc-footer__col-p {
+    color: #94a3b8;
+    font-size: 0.875rem;
+    text-decoration: none;
+    display: block;
+    margin-bottom: 0.5rem;
+}
+
+.dc-footer__col a:hover {
+    color: #3b82f6;
+}
+
+/* ---- Адаптив ---- */
+
+/* до 1160px */
+@media (max-width: 1160px) {
+    .dc-hero__title {
+        font-size: 2.5rem;
+    }
+    .dc-hero__subtitle {
+        font-size: 1.125rem;
+    }
+    .dc-history__text-title {
+        font-size: 24px;
+    }
+}
+
+/* до 1000px */
+@media (max-width: 1000px) {
+    .dc-section--content {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+    }
+    .dc-history__row {
+        flex-direction: column;
+    }
+    .dc-history__text {
+        max-width: 100%;
+        order: 1;
+    }
+    .dc-history__img-wrap {
+        max-width: 100%;
+        max-height: none;
+        order: 0;
+    }
+    .dc-history__img {
+        max-height: 400px;
+    }
+    .dc-history__img-badge {
+        bottom: 10%;
+        right: 10%;
+        width: 6rem;
+        height: 6rem;
+        font-size: 18px;
+    }
+    .dc-grid--4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .dc-grid--3 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+/* при ширине 1000px: имя пользователя в шапке обрезать до 7 символов с ... */
+@media (max-width: 1000px) {
+    .dc-header__user-name-text {
+        max-width: 7ch;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+        vertical-align: middle;
+    }
+}
+
+/* до 880px — нав в бургер, dropdown скрыт, пункты пользователя в бургере */
+@media (max-width: 880px) {
+    .dc-nav {
+        display: none;
+    }
+    .dc-nav.is-open {
+        display: flex;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        right: 0;
+        background: #fff;
+        flex-direction: column;
+        padding: 1rem 20px;
+        gap: 0;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .dc-nav.is-open .dc-nav__link {
+        padding: 12px 0;
+        border-bottom: 1px solid #f3f4f6;
+    }
+    .dc-nav.is-open .dc-nav__user-links {
+        display: flex;
+    }
+    .dc-header__user,
+    .nav-item.dropdown {
+        display: none !important;
+    }
+    .dc-header__toggler {
+        display: flex;
+    }
+    .dc-header__inner {
+        flex-wrap: wrap;
+    }
+    .dc-container {
+        padding: 0 16px;
+    }
+    .dc-hero__block {
+        padding-top: 5rem;
+        padding-bottom: 5rem;
+    }
+    .dc-grid--4,
+    .dc-grid--3,
+    .dc-grid--2 {
+        grid-template-columns: 1fr;
+    }
+    .dc-footer__inner {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+    .dc-footer-cta__inner {
+        padding: 3rem 16px;
+    }
+    .dc-footer-cta__buttons {
+        flex-direction: column;
+        width: 100%;
+        max-width: 280px;
+    }
+    .dc-footer-cta__btn {
+        width: 100%;
+        text-align: center;
+    }
+}
+
+/* до 768px */
+@media (max-width: 768px) {
+    .dc-main {
+        margin-top: 52px;
+    }
+    .dc-hero__block {
+        padding-top: 4rem;
+        padding-bottom: 4rem;
+        gap: 16px;
+    }
+    .dc-hero__title {
+        font-size: 2rem;
+    }
+    .dc-section--content {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+    .dc-history__img-badge {
+        display: none;
+    }
+}
+
+/* до 480px */
+@media (max-width: 480px) {
+    .dc-header__inner {
+        padding: 8px 12px;
+    }
+    .dc-container {
+        padding: 0 12px;
+    }
+    .dc-hero__block {
+        padding-top: 3rem;
+        padding-bottom: 3rem;
+    }
+    .dc-hero__title {
+        font-size: 1.75rem;
+    }
+    .dc-history__text-title {
+        font-size: 20px;
+    }
+    .dc-footer-cta__title {
+        font-size: 1.25rem;
+    }
+}
+
+/* ---- Главная: десктопный hero скрыт на мобильных, мобильный hero только на мобильных ---- */
+.hero_mobile {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .hero_login_section--desktop {
+        display: none !important;
+    }
+    .hero_mobile {
+        display: block;
+        position: relative;
+        min-height: 60vh;
+        padding: 3rem 1rem 4rem;
+        overflow: hidden;
+    }
+    .hero_mobile__bg {
+        position: absolute;
+        inset: 0;
+        z-index: -1;
+        background: linear-gradient(135deg, #1E3A8A 0%, #1E40AF 50%, #1D4ED8 100%);
+    }
+    .hero_mobile__inner {
+        max-width: 28rem;
+        margin: 0 auto;
+        text-align: center;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+    }
+    .hero_mobile__label {
+        font-size: 0.875rem;
+        color: #93C5FD;
+        font-weight: 500;
+        margin: 0;
+    }
+    .hero_mobile__title {
+        font-size: 1.75rem;
+        line-height: 1.2;
+        font-weight: 700;
+        color: #fff;
+        margin: 0;
+    }
+    .hero_mobile__title span {
+        background: linear-gradient(to right, #93C5FD, #DBEAFE);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+    .hero_mobile__subtitle {
+        font-size: 0.9375rem;
+        color: #DBEAFE;
+        line-height: 1.5;
+        margin: 0;
+    }
+    .hero_mobile__buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+        width: 100%;
+        max-width: 280px;
+        margin-top: 0.5rem;
+    }
+    .hero_mobile__btn {
+        display: inline-block;
+        padding: 12px 24px;
+        border-radius: 10px;
+        font-weight: 500;
+        font-size: 1rem;
+        text-align: center;
+        text-decoration: none;
+        transition: opacity 0.2s, transform 0.2s;
+    }
+    .hero_mobile__btn--primary {
+        background: linear-gradient(to right, #1D4ED8, #3B82F6);
+        color: #fff;
+    }
+    .hero_mobile__btn--secondary {
+        background: transparent;
+        color: #fff;
+        border: 1px solid rgba(255,255,255,0.6);
+    }
+    .hero_mobile__btn:active {
+        transform: scale(0.98);
+    }
+}
+
+body.dark-theme .hero_mobile__bg {
+    background: linear-gradient(135deg, #1e3a8a 0%, #1e40af 50%, #2563eb 100%);
+}
+body.dark-theme .hero_mobile__title { color: #f1f5f9; }
+body.dark-theme .hero_mobile__subtitle { color: #cbd5e1; }
+body.dark-theme .hero_mobile__btn--secondary { border-color: rgba(255,255,255,0.4); color: #e2e8f0; }
+
+/* Тёмная тема (если body.dark-theme) */
+body.dark-theme .dc-header {
+    background: #1e293b;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.3);
+}
+
+body.dark-theme .dc-nav__link {
+    color: #e2e8f0;
+}
+
+body.dark-theme .dc-nav__link:hover {
+    color: #93c5fd;
+}
+
+body.dark-theme .dc-section--hero::before {
+    opacity: 0.95;
+}
+
+body.dark-theme .dc-history__text-title {
+    color: #60a5fa;
+}
+
+body.dark-theme .dc-history__text-body p {
+    color: #cbd5e1;
+}
