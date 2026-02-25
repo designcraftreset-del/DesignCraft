@@ -16,6 +16,10 @@
     </script>
     <style>
         .burger-menu { display: none; }
+        /* Убираем дублирование: у авторизованных в шапке только дропдаун, без текста "Главная Аккаунт Выйти" */
+        @media (min-width: 1001px) {
+            .dc-nav--logged-in .dc-nav__user-links { display: none !important; }
+        }
         .banner-tags span{
             color: black !important;
         }
