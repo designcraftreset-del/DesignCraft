@@ -522,7 +522,7 @@
                     <button type="button" class="dc-header__toggler navbar-toggler burger-menu" id="dcNavToggler" aria-label="Меню" aria-expanded="false">
                         <span class="dc-header__toggler-icon navbar-toggler-icon"></span>
                     </button>
-                    <div class="dc-nav nav" id="dcNav" role="navigation">
+                    <div class="dc-nav nav {{ Auth::check() ? 'dc-nav--logged-in' : '' }}" id="dcNav" role="navigation">
                         @auth
                         <a class="dc-nav__link nav_text" href="{{ Auth::check() ? url('/aboutus') : route('login') }}">О нас</a>
                         <a class="dc-nav__link nav_text" href="{{ Auth::check() ? url('/services') : route('login') }}">Услуги</a>
