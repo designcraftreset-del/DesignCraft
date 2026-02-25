@@ -5,63 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>DesignCraft</title>
-    <link rel="stylesheet" href="/css/media.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="/css/style.css" media="print" onload="this.media='all'">
-    <link rel="stylesheet" href="/css/dc-adaptive.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="/css/skeleton.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="/css/media.css"><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/dc-adaptive.css"><link rel="stylesheet" href="/css/skeleton.css"></noscript>
+    <noscript><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/skeleton.css"></noscript>
     <link rel="icon" type="image/png" href="/favicon.png">
     <script>
     (function(){ function loadFont(){ var l=document.createElement('link'); l.rel='stylesheet'; l.href='https://fonts.bunny.net/css?family=Nunito'; document.head.appendChild(l); }
     if (document.readyState==='complete') loadFont(); else window.addEventListener('load', loadFont); })();
     </script>
     <style>
-        @media (max-width: 880px) {
-            .nav{
-                display: none;
-            }
-            .dropdown--submenu{
-                display: block;
-            }
-            .dropdown-submenu:hover .dropdown-menu {
-                top: -300px;
-                left: 0;
-                margin-left: 0px;
-                opacity: 1;
-                transform: translateX(0);
-                visibility: visible;
-            }
-            .hero_content_text span{
-                font-size: 3rem !important;
-                line-height: 1.2;
-            }
-            .hero_content_text h1{
-                font-size: 3rem !important;
-                line-height: 1.2;
-            }
-            .inner_services_content{
-                display: flex;
-                flex-wrap: wrap;
-            }
-            .hero{
-                display: flex;
-                align-items: center;
-                text-align: center;
-            }
-            .hero_content_text h2{
-                font-size: 1rem !important;
-                text-align: center;
-            }
-            .hero_content_text_block{
-                justify-content: center;
-            }
-            .content_working{
-                align-items: center;
-            }
-            .slider-nav{
-                display: none;
-            }
-        }
         .banner-tags span{
             color: black !important;
         }
