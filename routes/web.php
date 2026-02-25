@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\ApplicationController;
 use App\Http\Controllers\BannerControllerTwo;
@@ -35,7 +36,7 @@ Route::get("/userPanel",  [ApplicationController::class, 'userPanel'])->name('us
 // Страницы все
 Route::get("/aboutus",  [ApplicationController::class, 'aboutusFunc'])->name('aboutus');
 Route::get("/services",  [ApplicationController::class, 'servicesFunc'])->name('services');
-Route::get("/servicesBlock/create",  [ApplicationController::class, 'servicesCreateFunc'])->name('services.create');
+Route::get("/servicesBlock/create",  [ApplicationController::class, 'servicesCreateFunc'])->name('services.create')->middleware('auth', 'admin');
 Route::post("/servicesBlockPost",  [ServicesController::class, 'servicesBlockPostFunc'])->name('servicesBlockPost')->middleware('auth');
 Route::put('/services/{id}', [ServicesController::class, 'update'])->name('services.update')->middleware('auth');
 Route::get("/portfolio", [BannerControllerTwo::class, 'index'])->name('portfolio');
@@ -85,7 +86,7 @@ Route::middleware('guest')->prefix('auth-v2')->group(function () {
     Route::get('/password/reset/{token}', [AuthV2Controller::class, 'showResetForm'])->name('auth-v2.password.reset');
 });
 // Кастомный logout — редирект на главную (лендинг), не на /index
-Route::post('/logout', function (Illuminate\Http\Request $request) {
+Route::post('/logout', function (Request $request) {
     Auth::logout();
     $request->session()->invalidate();
     $request->session()->regenerateToken();

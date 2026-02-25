@@ -323,6 +323,8 @@
                         flex-direction: column;
                     }
                 </style>
+                @auth
+                @if((Auth::user()->role ?? null) === 'admin')
                 <div class="servicesBlock">
                     <a href="{{ url("servicesBlock/create") }}" class="news-read-more-news-read-more-news-read-more" style="display: inline-flex; align-items: center; gap: 0.5rem;">
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none">
@@ -331,6 +333,8 @@
                         Создать услугу
                     </a>
                 </div>
+                @endif
+                @endauth
                 <div class="block_tovar">
 
 

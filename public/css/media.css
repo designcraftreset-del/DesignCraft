@@ -1,3 +1,18 @@
+/* Адаптивный хедер: бургер на узких экранах */
+@media (max-width: 1000px) {
+    .nav, .button_header {
+        display: none;
+    }
+    .burger-menu {
+        display: block;
+    }
+}
+@media (min-width: 1001px) {
+    .burger-menu {
+        display: none !important;
+    }
+}
+
 @media (max-width: 1300px) {
     .block_history{
         flex-direction: column;

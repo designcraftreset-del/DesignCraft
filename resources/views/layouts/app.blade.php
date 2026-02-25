@@ -6,14 +6,16 @@
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <title>DesignCraft</title>
     <link rel="stylesheet" href="/css/style.css" media="print" onload="this.media='all'">
+    <link rel="stylesheet" href="/css/media.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="/css/skeleton.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/skeleton.css"></noscript>
+    <noscript><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/media.css"><link rel="stylesheet" href="/css/skeleton.css"></noscript>
     <link rel="icon" type="image/png" href="/favicon.png">
     <script>
     (function(){ function loadFont(){ var l=document.createElement('link'); l.rel='stylesheet'; l.href='https://fonts.bunny.net/css?family=Nunito'; document.head.appendChild(l); }
     if (document.readyState==='complete') loadFont(); else window.addEventListener('load', loadFont); })();
     </script>
     <style>
+        .burger-menu { display: none; }
         .banner-tags span{
             color: black !important;
         }
@@ -517,7 +519,7 @@
                     <div class="dc-header__logo logo_navbar-brand_navbar-brand">
                         <a class="navbar-brand" href="{{ url('/index') }}">DesignCraft</a>
                     </div>
-                    <button type="button" class="dc-header__toggler navbar-toggler" id="dcNavToggler" aria-label="Меню" aria-expanded="false">
+                    <button type="button" class="dc-header__toggler navbar-toggler burger-menu" id="dcNavToggler" aria-label="Меню" aria-expanded="false">
                         <span class="dc-header__toggler-icon navbar-toggler-icon"></span>
                     </button>
                     <div class="dc-nav nav" id="dcNav" role="navigation">

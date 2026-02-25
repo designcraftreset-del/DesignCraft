@@ -1584,15 +1584,6 @@
     </section>
     <section class="hero_mobile" id="hero-mobile" aria-label="Главный экран">
         <div class="hero_mobile__bg"></div>
-        <div class="hero_mobile__inner">
-            <p class="hero_mobile__label">Профессиональный дизайн</p>
-            <h1 class="hero_mobile__title">Мастерство дизайна в <span>Photoshop</span> & <span>Figma</span></h1>
-            <p class="hero_mobile__subtitle">Воплощаем ваши идеи в жизнь с помощью современных инструментов дизайна.</p>
-            <div class="hero_mobile__buttons">
-                <a href="{{ url('/login') }}" class="hero_mobile__btn hero_mobile__btn--primary">Начать проект</a>
-                <a href="#whyus" class="hero_mobile__btn hero_mobile__btn--secondary">Почему мы?</a>
-            </div>
-        </div>
     </section>
     <section class="dc-section dc-section--content inner_tools" id="whyus">
         <div class="dc-container container">
