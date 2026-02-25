@@ -1,4 +1,30 @@
-/* Адаптивный хедер: бургер на узких экранах */
+/* Адаптивный хедер */
+@media (min-width: 1001px) {
+    .burger-menu {
+        display: none !important;
+    }
+    /* На десктопе у авторизованных только дропдаун справа, без дублирования */
+    .dc-nav--logged-in .dc-nav__user-links {
+        display: none !important;
+    }
+    .dc-header__inner .container {
+        flex-wrap: nowrap;
+        gap: 1rem;
+    }
+    .dc-nav {
+        display: flex;
+        align-items: center;
+        flex-wrap: nowrap;
+        gap: 0.5rem 1rem;
+        overflow: hidden;
+    }
+    .dc-nav .dc-nav__link.nav_text {
+        white-space: nowrap;
+    }
+    .dc-header__user {
+        flex-shrink: 0;
+    }
+}
 @media (max-width: 1000px) {
     .nav, .button_header {
         display: none;
@@ -6,10 +32,35 @@
     .burger-menu {
         display: block;
     }
-}
-@media (min-width: 1001px) {
-    .burger-menu {
+    .dc-header__user.navbarSupportedContent {
         display: none !important;
+    }
+    .dc-nav.is-open .dc-nav__user-links {
+        display: flex;
+        flex-direction: column;
+    }
+    .dc-nav.is-open {
+        display: flex !important;
+        flex-direction: column;
+        position: fixed;
+        top: 55px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: #fff;
+        z-index: 999;
+        padding: 1rem;
+        overflow-y: auto;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+    }
+    .dc-nav.is-open .dc-nav__link {
+        padding: 0.75rem 0;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .dc-nav.is-open .dc-nav__user-links {
+        border-top: 1px solid #e2e8f0;
+        margin-top: 1rem;
+        padding-top: 1rem;
     }
 }
 
