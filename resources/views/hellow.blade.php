@@ -1770,7 +1770,7 @@
                                         </div>
 
                                         @auth
-                                            @if(Auth::user()->role === 'admin' || Auth::user()->role === 'moderator' || (Auth::user()->role === 'user' && $review->user_id === Auth::id()))
+                                            @if(Auth::user()->role === 'admin' || $review->user_id === Auth::id())
                                                 <div class="review-actions">
                                                     <form action="{{ route('reviews.destroy', $review->id) }}" method="POST" class="delete-review-form">
                                                         @csrf
