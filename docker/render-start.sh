@@ -9,7 +9,11 @@ for f in /etc/nginx/sites-enabled/default /etc/nginx/conf.d/default.conf /etc/ng
   if [ -f "$f" ] && grep -q "listen 80" "$f"; then
     sed -i "s/listen 80;/listen $PORT;/g" "$f"
     sed -i "s/listen \[::\]:80/listen [::]:$PORT/g" "$f"
-    echo "Patched $f to listen on $PORT" && break
+    # Laravel: передавать все запросы в index.php (иначе /login, /register и т.д. дают 404)
+    sed -i 's|try_files \$uri \$uri/ =404;|try_files $uri $uri/ /index.php?$query_string;|' "$f"
+    # Корень сайта — public (Laravel)
+    sed -i "s|root /var/www/html;|root /var/www/html/public;|g" "$f"
+    echo "Patched $f (port $PORT, Laravel front controller)" && break
   fi
 done
 
