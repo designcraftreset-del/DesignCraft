@@ -105,6 +105,19 @@
         }
         renderThreadsList(getOrdersToShow());
         loadOrderChatMessages(order.id);
+        startOrderChatMessagesPoll();
+    }
+
+    var orderChatMessagesPollTimer;
+    function startOrderChatMessagesPoll() {
+        if (orderChatMessagesPollTimer) clearInterval(orderChatMessagesPollTimer);
+        orderChatMessagesPollTimer = setInterval(function() {
+            var id = window._orderChatCurrentId;
+            if (id) loadOrderChatMessages(id);
+        }, 4000);
+    }
+    function stopOrderChatMessagesPoll() {
+        if (orderChatMessagesPollTimer) { clearInterval(orderChatMessagesPollTimer); orderChatMessagesPollTimer = null; }
     }
 
     function renderMessage(m, orderId) {

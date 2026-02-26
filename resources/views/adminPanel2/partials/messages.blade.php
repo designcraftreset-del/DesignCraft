@@ -520,8 +520,10 @@
                 });
             });
         loadSupportMessages(thread.id);
+        startSupportMessagesPoll();
     }
     var supportThreadsPollTimer;
+    var supportMessagesPollTimer;
     function startSupportThreadsPoll() {
         if (supportThreadsPollTimer) return;
         supportThreadsPollTimer = setInterval(function() {
@@ -538,7 +540,15 @@
             }
         }, 20000);
     }
-    function stopSupportThreadsPoll() { if (supportThreadsPollTimer) { clearInterval(supportThreadsPollTimer); supportThreadsPollTimer = null; } }
+    function stopSupportThreadsPoll() { if (supportThreadsPollTimer) { clearInterval(supportThreadsPollTimer); supportThreadsPollTimer = null; } stopSupportMessagesPoll(); }
+    function startSupportMessagesPoll() {
+        if (supportMessagesPollTimer) clearInterval(supportMessagesPollTimer);
+        supportMessagesPollTimer = setInterval(function() {
+            var tid = window._supportChatCurrentThreadId;
+            if (tid) loadSupportMessages(tid);
+        }, 4000);
+    }
+    function stopSupportMessagesPoll() { if (supportMessagesPollTimer) { clearInterval(supportMessagesPollTimer); supportMessagesPollTimer = null; } }
     document.getElementById('msg-tab-users') && document.getElementById('msg-tab-users').addEventListener('click', function() { startSupportThreadsPoll(); });
     document.getElementById('msg-tab-admin') && document.getElementById('msg-tab-admin').addEventListener('click', function() { stopSupportThreadsPoll(); });
     function openSupportUserModal() {
