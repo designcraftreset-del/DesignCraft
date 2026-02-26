@@ -180,14 +180,23 @@ class ApplicationController extends Controller
         $chartMonth = (int) $request->get('chart_month', now()->month);
         if ($chartYear < 2020 || $chartYear > 2100) $chartYear = now()->year;
         if ($chartMonth < 1 || $chartMonth > 12) $chartMonth = now()->month;
-        $barRaw = Application::selectRaw('MONTH(created_at) as month, COUNT(*) as total')->whereYear('created_at', $chartYear)->groupBy('month')->orderBy('month')->pluck('total', 'month')->all();
+        $driver = DB::connection()->getDriverName();
+        if ($driver === 'pgsql') {
+            $barRaw = Application::selectRaw('EXTRACT(MONTH FROM created_at)::integer as month, COUNT(*) as total')->whereYear('created_at', $chartYear)->groupByRaw('EXTRACT(MONTH FROM created_at)')->orderBy('month')->pluck('total', 'month')->all();
+            $chartByDayRaw = Application::selectRaw('EXTRACT(DAY FROM created_at)::integer as day, COUNT(*) as total')
+                ->whereMonth('created_at', $chartMonth)->whereYear('created_at', $chartYear)
+                ->groupByRaw('EXTRACT(DAY FROM created_at)')->orderBy('day')->pluck('total', 'day')->all();
+            $availableYears = Application::selectRaw('DISTINCT EXTRACT(YEAR FROM created_at)::integer as y')->orderBy('y', 'desc')->pluck('y')->take(10)->all();
+        } else {
+            $barRaw = Application::selectRaw('MONTH(created_at) as month, COUNT(*) as total')->whereYear('created_at', $chartYear)->groupBy('month')->orderBy('month')->pluck('total', 'month')->all();
+            $chartByDayRaw = Application::selectRaw('DAY(created_at) as day, COUNT(*) as total')
+                ->whereMonth('created_at', $chartMonth)->whereYear('created_at', $chartYear)
+                ->groupBy('day')->orderBy('day')->pluck('total', 'day')->all();
+            $availableYears = Application::selectRaw('DISTINCT YEAR(created_at) as y')->orderBy('y', 'desc')->pluck('y')->take(10)->all();
+        }
         $chartBar = array_replace(array_fill(1, 12, 0), $barRaw);
         $daysInMonth = (int) date('t', mktime(0, 0, 0, $chartMonth, 1, $chartYear));
-        $chartByDayRaw = Application::selectRaw('DAY(created_at) as day, COUNT(*) as total')
-            ->whereMonth('created_at', $chartMonth)->whereYear('created_at', $chartYear)
-            ->groupBy('day')->orderBy('day')->pluck('total', 'day')->all();
         $chartByDay = array_replace(array_fill(1, $daysInMonth, 0), $chartByDayRaw);
-        $availableYears = Application::selectRaw('DISTINCT YEAR(created_at) as y')->orderBy('y', 'desc')->pluck('y')->take(10)->all();
         if (!in_array($chartYear, $availableYears, true)) $availableYears = array_merge([$chartYear], $availableYears);
         $inProgress = (int) Application::where('status', 'processing')->count();
         $chartPie = [
