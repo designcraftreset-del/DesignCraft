@@ -32,9 +32,9 @@
     .burger-menu {
         display: block;
     }
-    .dc-header__user.navbarSupportedContent {
+    /* .dc-header__user.navbarSupportedContent {
         display: none !important;
-    }
+    } */
     .dc-nav.is-open .dc-nav__user-links {
         display: flex;
         flex-direction: column;
@@ -208,9 +208,9 @@
         grid-template-columns: repeat(2, minmax(0, 1fr));
     }
     .content_tools{
-        display: grid;
-        gap: 20px;
-        grid-template-columns: repeat(3, minmax(0, 1fr));
+        display: flex;
+        flex-direction: column;
+        gap: 0;
     }
     .block__contacts{
         flex-direction: column;
@@ -308,9 +308,9 @@
         gap: 10px;
     }
     .content_tools{
-        display: grid;
-        gap: 20px;
-        grid-template-columns: repeat(2, minmax(0, 1fr));
+        display: flex;
+        flex-direction: column;
+        gap: 0;
     }
 }
 

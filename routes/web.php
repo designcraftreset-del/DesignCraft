@@ -28,6 +28,11 @@ Route::get("/adminPanel2/export/table", [ApplicationController::class, 'exportTa
 Route::get("/adminPanel2/export/services", [ApplicationController::class, 'exportServices'])->name('adminPanel2.export.services')->middleware('auth');
 Route::get("/adminPanel2/export/messages", [ApplicationController::class, 'exportMessages'])->name('adminPanel2.export.messages')->middleware('auth');
 Route::get("/userPanel",  [ApplicationController::class, 'userPanel'])->name('userPanel')->middleware('auth');
+// Включить мобильную версию сайта (редирект на /mobile с установкой сессии)
+Route::get('/switch-to-mobile', function () {
+    request()->session()->put(\App\Http\Middleware\DetectMobile::SESSION_FORCE_VIEW, 'mobile');
+    return redirect()->route('mobile.home');
+})->name('switch.to.mobile')->middleware('auth');
 // Главная
 
 Route::get("/adminPanel",  [ApplicationController::class, 'apminPanelFunc'])->name('adminPanel')->middleware('auth');
@@ -74,6 +79,11 @@ Route::get('/privacy', function () {
 Route::get('/terms', function () {
     return view('legal.terms');
 })->name('terms');
+
+// Страница интерактивных тестов (конструктор превью, квиз, до/после, калькулятор)
+Route::get('/test', function () {
+    return view('test');
+})->name('test');
 
 // Аутентификация
 Auth::routes();

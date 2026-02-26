@@ -103,6 +103,9 @@ class ApplicationController extends Controller
             "photos_paths" => $photosPaths ?: null,
         ]);
         $newrequest->save();
+        if ($request->filled('redirect_mobile')) {
+            return redirect()->route('mobile.order.create')->with('success', true);
+        }
         return redirect()->route('order.create')->with('success', true);
     }
 
@@ -381,7 +384,15 @@ class ApplicationController extends Controller
         return view("app", compact("PublicFunc"));
     }
 
-    public function hellowFunc(){
+    public function hellowFunc(Request $request){
+        // Страницу designcraft могут открывать только гость и админ; остальных — на /home
+        if (Auth::check() && Auth::user()->role !== 'admin') {
+            return redirect()->route('home');
+        }
+        // На мобильном устройстве без выбора «десктоп» — показываем мобильную главную
+        if (\App\Http\Middleware\DetectMobile::isMobile($request) && !\App\Http\Middleware\DetectMobile::wantsDesktop($request)) {
+            return redirect()->route('mobile.home');
+        }
         $PublicFunc = Application::where('userid', Auth::id())->get();
         $reviews = Review::approved()->orderBy('created_at', 'desc')->get();
         $news = news::all();

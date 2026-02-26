@@ -70,7 +70,10 @@
                 Чат с пользователями
             </button>
         </div>
-        <a href="{{ route('adminPanel2.export.messages') }}" class="text-sm text-green-600 dark:text-green-400 hover:underline">Скачать в Excel</a>
+        <div class="flex items-center gap-2">
+            <a href="{{ route('switch.to.mobile') }}" class="text-sm text-sky-600 dark:text-sky-400 hover:underline">Мобильная версия</a>
+            <a href="{{ route('adminPanel2.export.messages') }}" class="text-sm text-green-600 dark:text-green-400 hover:underline">Скачать в Excel</a>
+        </div>
     </div>
 
     {{-- Вкладка: Чат с админами --}}
@@ -620,7 +623,35 @@
             .then(function(messages) {
                 if (!Array.isArray(messages)) return;
                 placeholder.classList.add('hidden');
-                var BTN_DELIM = '\n__BTN__\n';
+                function parseBotButtons(msgRaw) {
+                    var displayText = msgRaw;
+                    var buttons = [];
+                    var delim = '\n__BTN__\n';
+                    if (msgRaw.indexOf(delim) !== -1) {
+                        var parts = msgRaw.split(delim);
+                        displayText = (parts[0] || '').trim();
+                        try { if (parts[1]) buttons = JSON.parse((parts[1] || '').trim()); } catch (e) {}
+                        return { displayText: displayText, buttons: buttons };
+                    }
+                    if (msgRaw.indexOf('n__BTN__n') !== -1) {
+                        var idx = msgRaw.indexOf('n__BTN__n');
+                        displayText = (msgRaw.slice(0, idx) || '').replace(/\n+$/, '').trim();
+                        if (displayText.slice(-1) === '.' && displayText.length > 1) displayText = displayText.slice(0, -1).trim();
+                        var after = (msgRaw.slice(idx + 9) || '').replace(/^[\n\r\s]+/, '').trim();
+                        var jsonStart = after.indexOf('[');
+                        if (jsonStart !== -1) { try { buttons = JSON.parse(after.slice(jsonStart)); } catch (e) {} }
+                        return { displayText: displayText, buttons: buttons };
+                    }
+                    if (msgRaw.indexOf('__BTN__') !== -1) {
+                        var i = msgRaw.indexOf('__BTN__');
+                        displayText = (msgRaw.slice(0, i) || '').replace(/\n+$/, '').trim();
+                        var rest = (msgRaw.slice(i + 7) || '').replace(/^[n\n\r\s]+/, '').trim();
+                        var js = rest.indexOf('[');
+                        if (js !== -1) { try { buttons = JSON.parse(rest.slice(js)); } catch (e) {} }
+                        return { displayText: displayText, buttons: buttons };
+                    }
+                    return { displayText: displayText, buttons: buttons };
+                }
                 messages.forEach(function(m) {
                     var div = document.createElement('div');
                     div.className = 'support-msg-item flex gap-2 ' + (m.user && m.user.role === 'admin' || m.user && m.user.role === 'moderator' ? 'flex-row-reverse' : '');
@@ -629,13 +660,9 @@
                     var name = (m.user && m.user.name) ? m.user.name : (m.is_system ? 'Поддержка (бот)' : 'Пользователь');
                     var time = m.created_at ? new Date(m.created_at).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
                     var msgRaw = (m.message && m.message.toString()) || '';
-                    var displayText = msgRaw;
-                    var buttons = [];
-                    if (msgRaw.indexOf(BTN_DELIM) !== -1) {
-                        var parts = msgRaw.split(BTN_DELIM);
-                        displayText = parts[0] || '';
-                        try { if (parts[1]) buttons = JSON.parse(parts[1]); } catch (e) {}
-                    }
+                    var parsed = parseBotButtons(msgRaw);
+                    var displayText = parsed.displayText;
+                    var buttons = parsed.buttons || [];
                     var msgContent = displayText ? ('<p class="mt-1 whitespace-pre-wrap support-msg-text">' + displayText.replace(/</g, '&lt;').replace(/>/g, '&gt;') + '</p>') : '';
                     if (Array.isArray(buttons) && buttons.length > 0) {
                         msgContent += '<div class="mt-2 flex flex-wrap gap-1.5">' + buttons.map(function(b) {

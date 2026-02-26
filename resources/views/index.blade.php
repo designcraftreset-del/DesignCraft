@@ -291,6 +291,63 @@
                 </div>
             </div>
         </section>
+
+        {{-- Секция До / После --}}
+        <section class="before-after-section">
+            <div class="container">
+                <div class="before-after-section__header">
+                    <h1>До и После</h1>
+                    <h2>Двигайте ползунок — слева исходный материал, справа готовый дизайн.</h2>
+                </div>
+                <div class="before-after-wrap">
+                    <div class="before-after-inner">
+                        <img src="/image/before-after/before.jpg" alt="До" class="before-after-img before-after-img--before" loading="lazy">
+                        <div class="before-after-clip">
+                            <img src="/image/before-after/after.jpg" alt="После" class="before-after-img before-after-img--after" loading="lazy">
+                        </div>
+                        <input type="range" id="beforeAfterSlider" class="before-after-range" min="0" max="100" value="50" aria-label="Сравнение до и после">
+                        <div class="before-after-handle" id="beforeAfterHandle" aria-hidden="true">
+                            <span class="before-after-handle-dot"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <style>
+        .before-after-section { padding: 4rem 0; background: #f8fafc; }
+        .dark-theme .before-after-section { background: #0f172a; }
+        .before-after-section__header { text-align: center; margin-bottom: 2rem; text-align: center; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+        .before-after-section__title { font-size: 1.75rem; margin: 0 0 0.5rem; color: #1e293b; }
+        .dark-theme .before-after-section__title { color: #f1f5f9; }
+        .before-after-section__subtitle { margin: 0; color: #64748b; font-size: 1rem; }
+        .dark-theme .before-after-section__subtitle { color: #94a3b8; }
+        .before-after-wrap { max-width: 800px; margin: 0 auto; border-radius: 16px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.12); }
+        .dark-theme .before-after-wrap { box-shadow: 0 10px 40px rgba(0,0,0,0.4); }
+        .before-after-inner { position: relative; aspect-ratio: 16/10; }
+        .before-after-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+        .before-after-clip { position: absolute; inset: 0; clip-path: inset(0 50% 0 0); }
+        .before-after-range { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; opacity: 0; cursor: ew-resize; z-index: 2; }
+        .before-after-handle { position: absolute; top: 0; bottom: 0; left: 50%; width: 4px; background: #fff; box-shadow: 0 0 12px rgba(0,0,0,0.4); pointer-events: none; z-index: 1; transition: left 0.05s ease; }
+        .before-after-handle-dot { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 40px; height: 40px; background: #fff; border-radius: 50%; box-shadow: 0 2px 12px rgba(0,0,0,0.3); }
+        @media (max-width: 768px) { .before-after-section { padding: 2.5rem 0; } .before-after-section__title { font-size: 1.4rem; } }
+        </style>
+        <script>
+        (function() {
+            var slider = document.getElementById('beforeAfterSlider');
+            var clip = document.querySelector('.before-after-clip');
+            var handle = document.getElementById('beforeAfterHandle');
+            if (!slider || !clip || !handle) return;
+            function move(v) {
+                var pct = Math.min(100, Math.max(0, v));
+                clip.style.clipPath = 'inset(0 ' + (100 - pct) + '% 0 0)';
+                handle.style.left = pct + '%';
+                slider.value = pct;
+            }
+            slider.addEventListener('input', function() { move(Number(this.value)); });
+            move(50);
+        })();
+        </script>
+
         <section class="inner_working">
             <div class="container">
                 <div class="block_working">
@@ -322,146 +379,7 @@
                 </div>
             </div>
         </section>
-        <section class="inner_reviews">
-            <div class="container">
-                <div class="block_reviews">
-                    <p class="block_working_text_h1">Отзывы</p>
-                    <div class="svg_reviews_block"></div>
-                    <h1>Что говорят наши клиенты</h1>
-                    <h2>Нас выбирают за качество, скорость и профессионализм. Вот что говорят те, кто уже воспользовался нашими услугами.</h2>
-                    @if($reviews->count() > 0)
-                        <div class="reviews-slider-container">
-                            <div class="reviews-slider" id="reviewsSlider">
-                                @foreach($reviews as $review)
-                                    <div class="review-card">
-                                        <div class="review-header">
-                                            <div class="account-avatar">
-                                                @if($review->user && $review->user->avatar)
-                                                    <img src="{{ url('storage/' . $review->user->avatar) }}" 
-                                                        alt="Аватар" 
-                                                        loading="lazy"
-                                                        style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-                                                @else
-                                                    <img class="avatar" src="{{ url('image/3/1.png') }}" alt="" loading="lazy">
-                                                    <style>
-                                                        .avatar{
-                                                            padding: 20px;
-                                                        }
-                                                    </style>
-                                                @endif
-                                            </div>
-                                            <div class="review-client-info">
-                                                <h4>{{ $review->client_name }}</h4>
-                                                @if($review->client_position)
-                                                    <p>{{ $review->client_position }}</p>
-                                                @endif
-                                            </div>
-
-                                            @auth
-                                                @if(Auth::user()->role === 'admin' || $review->user_id === Auth::id())
-                                                    <div class="review-actions">
-                                                        <form action="{{ route('reviews.destroy', $review->id) }}" method="POST" class="delete-review-form">
-                                                            @csrf
-                                                            @method('DELETE')
-                                                            <button type="submit" class="delete-review-btn" onclick="return confirm('Вы уверены, что хотите удалить этот отзыв?')">
-                                                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                    <path d="M3 6h18"></path>
-                                                                    <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                                                    <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                                                </svg>
-                                                            </button>
-                                                        </form>
-                                                    </div>
-                                                @endif
-                                            @endauth
-                                        </div>
-
-                                        <div class="review-rating">
-                                            @for($i = 1; $i <= 5; $i++)
-                                                <svg class="star {{ $i <= $review->rating ? '' : 'empty' }}" viewBox="0 0 20 20">
-                                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                                </svg>
-                                            @endfor
-                                        </div>
-                                        <p class="review-text">"{{ $review->review_text }}"</p>
-                                        <div class="review-date">
-                                            {{ $review->created_at->format('d.m.Y') }}
-                                        </div>
-                                    </div>
-                                @endforeach
-                            </div>
-
-                            <div class="slider-nav">
-                                <button class="slider-btn" id="prevBtn"><span>‹</span></button>
-                                <div class="slider-dots" id="sliderDots"></div>
-                                <button class="slider-btn" id="nextBtn"><span>›</span></button>
-                            </div>
-                        </div>
-                    @else
-                        <div style="text-align: center; padding: 40px 0;">
-                            <p style="color: #6B7280; font-size: 16px;">Пока нет отзывов. Будьте первым!</p>
-                        </div>
-                    @endif
-                     @auth                                   
-                    <div class="review-form-container">
-                        <h3 class="review-form-title">Оставьте свой отзыв</h3>
-                        <p class="review-form-subtitle">Поделитесь вашим опытом работы с нами</p>
-                        <form class="review-form" action="{{ route('reviews.store') }}" method="POST">
-                            @csrf
-                            
-                            <div class="form-group">
-                                <label for="client_name">Ваше имя *</label>
-                                <input type="text" id="client_name" name="client_name" required 
-                                    placeholder="Введите ваше имя" value="{{ Auth::check() ? Auth::user()->name : '' }}">
-                                @error('client_name')
-                                    <span class="error-message">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="client_position">Ваша должность/род деятельности</label>
-                                <input type="text" id="client_position" name="client_position" 
-                                    placeholder="Например: Блогер, Предприниматель, Студент">
-                                @error('client_position')
-                                    <span class="error-message">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            
-                            <div class="form-group">
-                                <label>Оценка *</label>
-                                <div class="rating-select">
-                                    <div class="rating-stars" id="ratingStars">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            <span style="color: #ff8400 !important;" class="rating-star" data-rating="{{ $i }}">★</span>
-                                        @endfor
-                                    </div>
-                                    <input type="hidden" name="rating" id="ratingInput" value="5" required>
-                                </div>
-                                @error('rating')
-                                    <span class="error-message">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="review_text">Текст отзыва *</label>
-                                <textarea class="textarea" id="review_text" name="review_text" rows="5" required 
-                                        placeholder="Расскажите о вашем опыте работы с нами..."></textarea>
-                                @error('review_text')
-                                    <span class="error-message">{{ $message }}</span>
-                                @enderror
-                            </div>
-                            <div class="submit-review-btn_two">
-                                Отправить отзыв
-                                <button type="submit" class="submit-review-btn">
-                                    Спасибо за отзыв!
-                                </button>
-                            </div>
-                        </form>
-                    </div>
-                    @endauth
-                </div>
-            </div>
-        </section>
+        @include('partials.reviews-section', ['reviews' => $reviews])
         
     </main>
         @include('partials.footer')
@@ -696,81 +614,6 @@ function openModal() {
             s.style.color = (s.getAttribute('data-rating') <= currentRating) ? activeColor : inactiveColor;
         });
 
-        initReviewsSlider();
     });
-
-
-    function initReviewsSlider() {
-        const slider = document.getElementById('reviewsSlider');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const dotsContainer = document.getElementById('sliderDots');
-        
-        if (!slider) return;
-        
-        const cards = slider.querySelectorAll('.review-card');
-        if (cards.length === 0) return;
-        
-        let currentIndex = 0;
-        const cardWidth = 350;
-        const visibleCards = Math.floor(slider.parentElement.offsetWidth / cardWidth);
-        
-
-        cards.forEach((_, index) => {
-            const dot = document.createElement('div');
-            dot.className = `slider-dot ${index === 0 ? 'active' : ''}`;
-            dot.addEventListener('click', () => goToSlide(index));
-            dotsContainer.appendChild(dot);
-        });
-        
-        const dots = document.querySelectorAll('.slider-dot');
-        
-
-        function updateSlider() {
-            const translateX = -currentIndex * cardWidth;
-            slider.style.transform = `translateX(${translateX}px)`;
-            
-
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentIndex);
-            });
-            
-
-            prevBtn.disabled = currentIndex === 0;
-            nextBtn.disabled = currentIndex >= cards.length - visibleCards;
-        }
-        
-
-        function goToSlide(index) {
-            currentIndex = Math.max(0, Math.min(index, cards.length - visibleCards));
-            updateSlider();
-        }
-
-        prevBtn.addEventListener('click', () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateSlider();
-            }
-        });
-        
-        nextBtn.addEventListener('click', () => {
-            if (currentIndex < cards.length - visibleCards) {
-                currentIndex++;
-                updateSlider();
-            }
-        });
-        
-
-        window.addEventListener('resize', () => {
-            const newVisibleCards = Math.floor(slider.parentElement.offsetWidth / cardWidth);
-            if (currentIndex > cards.length - newVisibleCards) {
-                currentIndex = Math.max(0, cards.length - newVisibleCards);
-            }
-            updateSlider();
-        });
-        
-
-        updateSlider();
-    }
 </script>
 @endsection

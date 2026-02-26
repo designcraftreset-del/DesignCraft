@@ -606,7 +606,7 @@
 }
 
 .news-image img {
-    width: 100%;
+    width: 334px;
     height: 100%;
     object-fit: cover;
     transition: transform 0.5s ease;

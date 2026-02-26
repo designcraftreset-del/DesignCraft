@@ -37,6 +37,7 @@ class Kernel extends HttpKernel
             \App\Http\Middleware\VerifyCsrfToken::class,
             \Illuminate\Routing\Middleware\SubstituteBindings::class,
             \App\Http\Middleware\UpdateUserLastSeen::class,
+            \App\Http\Middleware\DetectMobile::class,
         ],
 
         'api' => [
@@ -67,5 +68,6 @@ class Kernel extends HttpKernel
 
         'admin' => \App\Http\Middleware\AdminMiddleware::class,
         'moderator' => \App\Http\Middleware\CheckModerator::class,
+        'mobile.detect' => \App\Http\Middleware\DetectMobile::class,
     ];
 }

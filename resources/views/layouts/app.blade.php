@@ -8,7 +8,10 @@
     <link rel="stylesheet" href="/css/style.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="/css/media.css" media="print" onload="this.media='all'">
     <link rel="stylesheet" href="/css/skeleton.css" media="print" onload="this.media='all'">
-    <noscript><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/media.css"><link rel="stylesheet" href="/css/skeleton.css"></noscript>
+    @if(!request()->routeIs('home'))
+    <link rel="stylesheet" href="/css/adaptive.css">
+    @endif
+    <noscript><link rel="stylesheet" href="/css/style.css"><link rel="stylesheet" href="/css/media.css"><link rel="stylesheet" href="/css/skeleton.css">@if(!request()->routeIs('home'))<link rel="stylesheet" href="/css/adaptive.css">@endif</noscript>
     <link rel="icon" type="image/png" href="/favicon.png">
     <script>
     (function(){ function loadFont(){ var l=document.createElement('link'); l.rel='stylesheet'; l.href='https://fonts.bunny.net/css?family=Nunito'; document.head.appendChild(l); }
@@ -306,6 +309,141 @@
         .dropdown-submenu .dropdown-menu {
             animation: slideInRight 0.3s ease;
         }
+        /* Нижнее выезжающее меню (мобильные) */
+        @media (min-width: 1001px) {
+            .mobile-nav-overlay, .mobile-nav-sheet { display: none !important; }
+        }
+        @media (max-width: 1000px) {
+            .mobile-nav-overlay {
+                position: fixed;
+                inset: 0;
+                background: rgba(0,0,0,0.4);
+                z-index: 1008;
+                opacity: 0;
+                visibility: hidden;
+                transition: opacity 0.3s ease, visibility 0.3s ease;
+            }
+            .mobile-nav-overlay.is-open {
+                opacity: 1;
+                visibility: visible;
+            }
+            .mobile-nav-sheet {
+                position: fixed;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                z-index: 1009;
+                background: #fff;
+                border-radius: 20px 20px 0 0;
+                box-shadow: 0 -4px 24px rgba(0,0,0,0.15);
+                max-height: 85vh;
+                display: flex;
+                flex-direction: column;
+                transform: translateY(100%);
+                transition: transform 0.35s cubic-bezier(0.32, 0.72, 0, 1);
+            }
+            .mobile-nav-sheet.is-open {
+                transform: translateY(0);
+            }
+            .mobile-nav-sheet__handle {
+                width: 36px;
+                height: 4px;
+                background: #cbd5e0;
+                border-radius: 2px;
+                margin: 12px auto 8px;
+            }
+            .mobile-nav-sheet__scroll {
+                overflow-y: auto;
+                padding: 0 1rem 2rem;
+                -webkit-overflow-scrolling: touch;
+            }
+            .mobile-nav-sheet__name {
+                font-weight: 700;
+                color: #1e293b;
+                padding: 12px 0 8px;
+                font-size: 1rem;
+                border-bottom: 1px solid #e2e8f0;
+                margin-bottom: 8px;
+            }
+            .mobile-nav-sheet__link {
+                display: block;
+                padding: 14px 12px;
+                color: #334155;
+                text-decoration: none;
+                font-weight: 500;
+                border-radius: 10px;
+                transition: background 0.2s, color 0.2s;
+            }
+            .mobile-nav-sheet__link:hover, .mobile-nav-sheet__link:active {
+                background: #f1f5f9;
+                color: #1d4ed8;
+            }
+            .mobile-nav-sheet__link--logout {
+                color: #dc2626;
+                margin-top: 8px;
+                border-top: 1px solid #e2e8f0;
+                padding-top: 16px;
+            }
+            .mobile-nav-sheet__link--logout:hover { background: #fef2f2; color: #b91c1c; }
+            .mobile-nav-sheet__sub { margin: 4px 0; }
+            .mobile-nav-sheet__sub-toggle {
+                width: 100%;
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+                padding: 14px 12px;
+                background: none;
+                border: none;
+                font-size: 1rem;
+                font-weight: 500;
+                color: #334155;
+                cursor: pointer;
+                border-radius: 10px;
+                text-align: left;
+                transition: background 0.2s;
+            }
+            .mobile-nav-sheet__sub-toggle:hover { background: #f1f5f9; }
+            .mobile-nav-sheet__sub-toggle::after {
+                content: '';
+                width: 8px;
+                height: 8px;
+                border-right: 2px solid #64748b;
+                border-bottom: 2px solid #64748b;
+                transform: rotate(45deg);
+                transition: transform 0.25s ease;
+            }
+            .mobile-nav-sheet__sub.open .mobile-nav-sheet__sub-toggle::after {
+                transform: rotate(-135deg);
+            }
+            .mobile-nav-sheet__sub-list {
+                display: none;
+                padding-left: 1rem;
+                padding-bottom: 8px;
+            }
+            .mobile-nav-sheet__sub.open .mobile-nav-sheet__sub-list { display: block; }
+            .mobile-nav-sheet__sub-list a {
+                display: block;
+                padding: 10px 12px;
+                color: #64748b;
+                text-decoration: none;
+                font-size: 0.95rem;
+                border-radius: 8px;
+            }
+            .mobile-nav-sheet__sub-list a:hover { background: #f1f5f9; color: #1d4ed8; }
+            .dark-theme .mobile-nav-sheet { background: #1e293b; box-shadow: 0 -4px 24px rgba(0,0,0,0.4); }
+            .dark-theme .mobile-nav-sheet__handle { background: #475569; }
+            .dark-theme .mobile-nav-sheet__name { color: #f1f5f9; border-bottom-color: #334155; }
+            .dark-theme .mobile-nav-sheet__link { color: #e2e8f0; }
+            .dark-theme .mobile-nav-sheet__link:hover { background: #334155; color: #60a5fa; }
+            .dark-theme .mobile-nav-sheet__link--logout { color: #f87171; border-top-color: #334155; }
+            .dark-theme .mobile-nav-sheet__link--logout:hover { background: #450a0a; color: #fca5a5; }
+            .dark-theme .mobile-nav-sheet__sub-toggle { color: #e2e8f0; }
+            .dark-theme .mobile-nav-sheet__sub-toggle:hover { background: #334155; }
+            .dark-theme .mobile-nav-sheet__sub-toggle::after { border-color: #94a3b8; }
+            .dark-theme .mobile-nav-sheet__sub-list a { color: #94a3b8; }
+            .dark-theme .mobile-nav-sheet__sub-list a:hover { background: #334155; color: #60a5fa; }
+            .dc-nav.is-open { display: none !important; }
+        }
         /* @media (max-width: 768px) {
             .dropdown-submenu .dropdown-menu {
                 position: static;
@@ -506,6 +644,30 @@
     </div>
 </div>
 <body class="page-loading">
+    <script>
+    (function(){
+        var path = window.location.pathname.replace(/\/$/, '') || '/';
+        if (path.indexOf('/mobile') === 0) return;
+        if (sessionStorage.forceDesktopView === '1') return;
+        if (window.innerWidth > 768) return;
+        var mobilePath = '/mobile/';
+        if (path === '/' || path === '') mobilePath = '/mobile/';
+        else if (path === '/aboutus') mobilePath = '/mobile/about';
+        else if (path === '/services') mobilePath = '/mobile/services';
+        else if (path === '/portfolio') mobilePath = '/mobile/portfolio';
+        else if (path === '/whyus') mobilePath = '/mobile/whyus';
+        else if (path === '/contacts') mobilePath = '/mobile/contacts';
+        else if (path === '/websiteNews') mobilePath = '/mobile/news';
+        else if (path.indexOf('/newsTwo/') === 0) mobilePath = '/mobile/news' + path.slice(8);
+        else if (path === '/privacy') mobilePath = '/mobile/privacy';
+        else if (path === '/terms') mobilePath = '/mobile/terms';
+        else if (path === '/order') mobilePath = '/mobile/order';
+        else if (path === '/userPanel') mobilePath = '/mobile/account';
+        else mobilePath = '/mobile/';
+        var q = window.location.search || '';
+        window.location.replace(mobilePath + q);
+    })();
+    </script>
     <div class="skeleton-overlay" id="skeletonOverlay" aria-hidden="true">
         <div class="skeleton-overlay__header"></div>
         <div class="skeleton-overlay__body">
@@ -526,6 +688,86 @@
                     <button type="button" class="dc-header__toggler navbar-toggler burger-menu" id="dcNavToggler" aria-label="Меню" aria-expanded="false">
                         <span class="dc-header__toggler-icon navbar-toggler-icon"></span>
                     </button>
+                    {{-- Нижнее выезжающее меню (только на мобильных) --}}
+                    <div class="mobile-nav-overlay" id="mobileNavOverlay" aria-hidden="true"></div>
+                    <div class="mobile-nav-sheet" id="mobileNavSheet" role="dialog" aria-label="Меню">
+                        <div class="mobile-nav-sheet__handle"></div>
+                        <div class="mobile-nav-sheet__scroll">
+                            @php $isAdminOrModer = Auth::check() && in_array(Auth::user()->role ?? null, ['admin', 'moderator']); @endphp
+                            @if($isAdminOrModer)
+                                <div class="mobile-nav-sheet__name">{{ Auth::user()->name }}</div>
+                                <a class="mobile-nav-sheet__link" href="{{ url('/index') }}">Главная</a>
+                                <a class="mobile-nav-sheet__link" href="{{ route('userPanel') }}">Аккаунт</a>
+                                <a class="mobile-nav-sheet__link" href="#" data-action="support-chat">Чат поддержки</a>
+                                <a class="mobile-nav-sheet__link" href="{{ route('adminPanel2') }}">Админ панель</a>
+                                <div class="mobile-nav-sheet__sub">
+                                    <button type="button" class="mobile-nav-sheet__sub-toggle" aria-expanded="false">Различные страницы</button>
+                                    <div class="mobile-nav-sheet__sub-list">
+                                        <a href="{{ url('/home') }}">Добро пожаловать</a>
+                                        <a href="{{ url('/') }}">Главная (Вход)</a>
+                                        <a href="{{ url('/index') }}">Index</a>
+                                        <a href="{{ url('/aboutus') }}">О нас</a>
+                                        <a href="{{ url('/services') }}">Услуги</a>
+                                        <a href="{{ url('/portfolio') }}">Портфолио</a>
+                                        <a href="{{ url('/websiteNews') }}">Новости</a>
+                                        <a href="{{ url('/whyus') }}">Почему мы?</a>
+                                        <a href="{{ url('/contacts') }}">Контакты</a>
+                                        <a href="{{ url('/order') }}">Оформление заказа</a>
+                                        <a href="{{ url('/test') }}">Тест</a>
+                                    </div>
+                                </div>
+                                <div class="mobile-nav-sheet__sub">
+                                    <button type="button" class="mobile-nav-sheet__sub-toggle" aria-expanded="false">Чаты</button>
+                                    <div class="mobile-nav-sheet__sub-list">
+                                        <a href="#" data-action="support-chat">Чат поддержки</a>
+                                        <a href="{{ route('admin.support-chat') }}">Чат с пользователями</a>
+                                        <a href="{{ route('admin.chat') }}">Админ Чат</a>
+                                    </div>
+                                </div>
+                                <div class="mobile-nav-sheet__sub">
+                                    <button type="button" class="mobile-nav-sheet__sub-toggle" aria-expanded="false">Быстрая навигация</button>
+                                    <div class="mobile-nav-sheet__sub-list">
+                                        <a href="{{ url('/aboutus') }}">О нас</a>
+                                        <a href="{{ url('/services') }}">Услуги</a>
+                                        <a href="{{ url('/portfolio') }}">Портфолио</a>
+                                        <a href="{{ url('/websiteNews') }}">Новости</a>
+                                        <a href="{{ url('/whyus') }}">Почему мы?</a>
+                                        <a href="{{ url('/contacts') }}">Контакты</a>
+                                    </div>
+                                </div>
+                                <div class="mobile-nav-sheet__sub">
+                                    <button type="button" class="mobile-nav-sheet__sub-toggle" aria-expanded="false">Быстрый доступ</button>
+                                    <div class="mobile-nav-sheet__sub-list">
+                                        <a href="{{ url('/banners/create') }}">Загрузить баннер</a>
+                                        <a href="{{ url('/news/create') }}">Добавить новость</a>
+                                    </div>
+                                </div>
+                                <a class="mobile-nav-sheet__link" href="{{ route('moder.panel') }}">Модер панель</a>
+                                <a class="mobile-nav-sheet__link mobile-nav-sheet__link--logout" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Выйти</a>
+                            @else
+                                @auth
+                                    <div class="mobile-nav-sheet__name">{{ Auth::user()->name }}</div>
+                                @endauth
+                                <a class="mobile-nav-sheet__link" href="{{ Auth::check() ? url('/aboutus') : route('login') }}">О нас</a>
+                                <a class="mobile-nav-sheet__link" href="{{ Auth::check() ? url('/services') : route('login') }}">Услуги</a>
+                                <a class="mobile-nav-sheet__link" href="{{ Auth::check() ? url('/portfolio') : route('login') }}">Портфолио</a>
+                                <a class="mobile-nav-sheet__link" href="{{ Auth::check() ? url('/websiteNews') : route('login') }}">Новости</a>
+                                <a class="mobile-nav-sheet__link" href="{{ Auth::check() ? url('/whyus') : route('login') }}">Почему мы?</a>
+                                <a class="mobile-nav-sheet__link" href="{{ Auth::check() ? url('/contacts') : route('login') }}">Контакты</a>
+                                @auth
+                                    <a class="mobile-nav-sheet__link" href="{{ url('/index') }}">Главная</a>
+                                    <a class="mobile-nav-sheet__link" href="{{ route('userPanel') }}">Аккаунт</a>
+                                    <a class="mobile-nav-sheet__link" href="#" data-action="support-chat">Чат поддержки</a>
+                                    <a class="mobile-nav-sheet__link mobile-nav-sheet__link--logout" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Выйти</a>
+                                @else
+                                    <a class="mobile-nav-sheet__link" href="{{ route('login') }}">Логин</a>
+                                    @if (Route::has('register'))
+                                    <a class="mobile-nav-sheet__link" href="{{ route('register') }}">Регистрация</a>
+                                    @endif
+                                @endauth
+                            @endif
+                        </div>
+                    </div>
                     <div class="dc-nav nav {{ Auth::check() ? 'dc-nav--logged-in' : '' }}" id="dcNav" role="navigation">
                         @auth
                         <a class="dc-nav__link nav_text" href="{{ Auth::check() ? url('/aboutus') : route('login') }}">О нас</a>
@@ -707,18 +949,61 @@
         (function() {
             var toggler = document.getElementById('dcNavToggler');
             var dcNav = document.getElementById('dcNav');
-            if (toggler && dcNav) {
+            var overlay = document.getElementById('mobileNavOverlay');
+            var sheet = document.getElementById('mobileNavSheet');
+            var isMobile = function() { return window.innerWidth <= 1000; };
+            function closeMenu() {
+                if (dcNav) dcNav.classList.remove('is-open');
+                if (overlay) overlay.classList.remove('is-open');
+                if (sheet) sheet.classList.remove('is-open');
+                if (toggler) toggler.setAttribute('aria-expanded', 'false');
+                toggler?.classList.remove('open');
+            }
+            if (toggler) {
                 toggler.addEventListener('click', function() {
-                    dcNav.classList.toggle('is-open');
-                    toggler.setAttribute('aria-expanded', dcNav.classList.contains('is-open'));
-                });
-                document.addEventListener('click', function(e) {
-                    if (!e.target.closest('.dc-header') && dcNav.classList.contains('is-open')) {
-                        dcNav.classList.remove('is-open');
-                        toggler.setAttribute('aria-expanded', 'false');
+                    if (isMobile() && sheet && overlay) {
+                        sheet.classList.toggle('is-open');
+                        overlay.classList.toggle('is-open');
+                        toggler.classList.toggle('open');
+                        toggler.setAttribute('aria-expanded', sheet.classList.contains('is-open'));
+                        if (dcNav) dcNav.classList.remove('is-open');
+                    } else if (dcNav) {
+                        dcNav.classList.toggle('is-open');
+                        toggler.setAttribute('aria-expanded', dcNav.classList.contains('is-open'));
                     }
                 });
             }
+            if (overlay) overlay.addEventListener('click', closeMenu);
+            if (sheet) {
+                sheet.querySelectorAll('.mobile-nav-sheet__link[href="#"]').forEach(function(a) {
+                    a.addEventListener('click', function(e) {
+                        if (this.getAttribute('data-action') === 'support-chat') {
+                            e.preventDefault();
+                            var p = document.getElementById('support-chat-panel');
+                            if (p) p.classList.toggle('support-chat-open');
+                            closeMenu();
+                        }
+                    });
+                });
+                sheet.querySelectorAll('.mobile-nav-sheet__sub-toggle').forEach(function(btn) {
+                    btn.addEventListener('click', function() {
+                        var sub = this.closest('.mobile-nav-sheet__sub');
+                        if (sub) sub.classList.toggle('open');
+                        this.setAttribute('aria-expanded', sub.classList.contains('open'));
+                    });
+                });
+                sheet.querySelectorAll('.mobile-nav-sheet__link[href!="#"]').forEach(function(a) {
+                    a.addEventListener('click', function() { closeMenu(); });
+                });
+            }
+            document.addEventListener('click', function(e) {
+                if (!e.target.closest('.dc-header') && !e.target.closest('.mobile-nav-sheet') && dcNav && dcNav.classList.contains('is-open')) {
+                    closeMenu();
+                }
+            });
+            window.addEventListener('resize', function() {
+                if (!isMobile()) closeMenu();
+            });
         })();
     </script>
     <div class="night____theme">
