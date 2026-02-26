@@ -183,12 +183,49 @@ php artisan db:import --force
 
 **Важно:** переносятся только данные в БД. Файлы (аватарки, превью) на Render не копируются; загруженные на Render файлы на бесплатном тарифе живут только до перезапуска контейнера.
 
+### 5.5. Импорт БД изнутри Render (вариант B — если с ПК «server closed the connection»)
+
+Если `php artisan db:import --force` с вашего ПК к Render PostgreSQL обрывается, импорт можно выполнить **на стороне Render** (подключение к базе будет внутренним).
+
+1. **Локально** создайте экспорт:
+   ```bash
+   php artisan db:export
+   ```
+   Или, если есть только SQL-дамп MySQL:
+   ```bash
+   php artisan db:import-from-sql "путь/к/файлу.sql"
+   ```
+   В обоих случаях появятся JSON в `storage/app/db-export`.
+
+2. **Скопируйте** содержимое папки `storage/app/db-export` в папку **`database/db-export`** в проекте (эта папка в репозитории). То есть в репозитории должны быть файлы вида `database/db-export/users.json`, `database/db-export/applications.json` и т.д.
+
+3. Закоммитьте и запушьте:
+   ```bash
+   git add database/db-export/
+   git commit -m "Add db export for Render import"
+   git push origin main
+   ```
+
+4. В **Environment** Web Service на Render добавьте переменную:
+   - Key: `IMPORT_DB_TOKEN`
+   - Value: любой секретный набор символов (например `importSecret456`).
+
+5. После деплоя откройте в браузере **один раз**:
+   ```
+   https://designcraft-xej3.onrender.com/import-db?token=importSecret456
+   ```
+   (подставьте свой токен и свой домен). Импорт выполнится; в ответе будет список импортированных таблиц.
+
+6. После успешного импорта:
+   - Удалите переменную `IMPORT_DB_TOKEN` из Environment (безопасность).
+   - По желанию удалите маршрут `/import-db` из `routes/web.php` и при следующих деплоях можно убрать папку `database/db-export` из репозитория (или оставить пустой).
+
 ---
 
 ## 6. После первого запуска
 
 1. В Environment Web Service укажите `APP_URL=https://designcraft-xej3.onrender.com`.
-2. При необходимости создайте или проверьте учётную запись админа (через Shell на Render: `php artisan tinker` или миграции/сидеры).
+2. **Создать админа на Free (без Shell):** в Environment добавьте переменную `SETUP_ADMIN_TOKEN` = любой секретный набор символов (например `mySecret123`). Задеплойте, затем откройте в браузере: `https://designcraft-xej3.onrender.com/setup-admin?token=mySecret123` (подставьте свой токен). Админ создастся (логин: ii5543135@gmail.com, пароль: ii5543135@gmail.com). После этого удалите `SETUP_ADMIN_TOKEN` из Environment и при желании маршрут `/setup-admin` из кода.
 
 ---
 
@@ -200,7 +237,7 @@ php artisan db:import --force
 | Локальный .env | Для OSPanel; на Render не используется |
 | База на Render | PostgreSQL; `DATABASE_URL` из карточки базы |
 | **Обновить сайт** | `git add .` → `git commit -m "..."` → `git push origin main` (при включённом Auto-Deploy сайт обновится сам) или Manual Deploy в панели Render |
-| Текущая БД → Render | `php artisan db:export` → в .env временно `DATABASE_URL` (External) → `php artisan db:import --force` |
+| Текущая БД → Render | С ПК: `db:export` → в .env временно `DATABASE_URL` (External) → `db:import --force`. Либо вариант B: JSON в `database/db-export`, деплой, затем `/import-db?token=IMPORT_DB_TOKEN` один раз. |
 
 - Бесплатный инстанс «засыпает» после ~15 минут без запросов; первый запрос после простоя может идти 30–60 секунд.
 - Письма: Gmail SMTP, пароль приложения в `MAIL_PASSWORD`.

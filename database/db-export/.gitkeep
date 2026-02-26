@@ -1,0 +1,3 @@
+# Положите сюда JSON-файлы экспорта (users.json, applications.json и т.д.)
+# после выполнения: php artisan db:export (скопируйте из storage/app/db-export в эту папку)
+# Затем закоммитьте, задеплойте и откройте /import-db?token=ВАШ_IMPORT_DB_TOKEN один раз на Render.
