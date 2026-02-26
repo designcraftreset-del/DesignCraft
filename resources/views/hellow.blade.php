@@ -558,19 +558,6 @@
                 padding: 20px;
             }
             
-            /* Reviews section */
-            .reviews-slider-container {
-                padding: 0 10px;
-            }
-            
-            .review-card {
-                min-width: 300px;
-            }
-            
-            .review-form-container {
-                padding: 25px;
-            }
-            
             /* Team section */
             .content_block_team {
                 grid-template-columns: 1fr;
@@ -673,22 +660,6 @@
             
             .content_block_tools {
                 padding: 20px;
-            }
-            
-            /* Reviews */
-            .review-card {
-                min-width: 280px;
-                padding: 20px;
-            }
-            
-            .review-header {
-                flex-direction: column;
-                text-align: center;
-                gap: 15px;
-            }
-            
-            .review-client-info {
-                text-align: center;
             }
             
             /* Forms */
@@ -905,19 +876,6 @@
     color: #e0e0e0;
 }
 
-.dark-theme .review-card {
-    background: rgba(25, 29, 40, 0.8);
-    border: 1px solid rgba(255, 255, 255, 0.1);
-    color: #e0e0e0;
-}
-
-.dark-theme .review-client-info h4 {
-    color: #e0e0e0;
-}
-
-.dark-theme .review-client-info p {
-    color: #a0a0a0;
-}
 
 .dark-theme .review-text {
     color: #e0e0e0;
@@ -1559,8 +1517,8 @@
             <div class="hero_login">
                 <div class="hero_login_text">
                     <a class="hero_login_text_h2"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles w-4 h-4 text-primary animate-glow"><path d="M9.937 15.5A2 2 0 0 0 8.5 14.063l-6.135-1.582a.5.5 0 0 1 0-.962L8.5 9.936A2 2 0 0 0 9.937 8.5l1.582-6.135a.5.5 0 0 1 .963 0L14.063 8.5A2 2 0 0 0 15.5 9.937l6.135 1.581a.5.5 0 0 1 0 .964L15.5 14.063a2 2 0 0 0-1.437 1.437l-1.582 6.135a.5.5 0 0 1-.963 0z"></path><path d="M20 3v4"></path><path d="M22 5h-4"></path><path d="M4 17v2"></path><path d="M5 18H3"></path></svg>Профессиональный дизайн</a>
-                    <h1>Мастерство дизайна в <span>Photoshop</span> & <span>Figma</span></h1>
-                    <h2>Воплощаем ваши идеи в жизнь с помощью современных инструментов дизайна. Создаем уникальные визуальные решения, которые выделяют ваш бренд.</h2>
+                    <h1 class="hero_login_text_h2_hero_login_text_h2">Мастерство дизайна в <span>Photoshop</span> & <span>Figma</span></h1>
+                    <h2 class="hero_login_text_h2_hero_login_text">Воплощаем ваши идеи в жизнь с помощью современных инструментов дизайна. Создаем уникальные визуальные решения, которые выделяют ваш бренд.</h2>
                     <div class="hero_login_buttons">
                         <a href="{{ url('/login') }}" class="hero_login_buttons_h1"><p>Начать проект</p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
                         <a href="#whyus" class="hero_login_buttons_h2">Почему мы <p>?</p></a>                                  
@@ -1727,154 +1685,7 @@
             </div>
         </div>
     </section>
-    <section class="dc-section dc-section--content inner_reviews">
-        <style>
-            .inner_reviews{
-                background-color: white;
-            }
-            .dark-theme .inner_reviews{
-                background-color: #0f141d;
-            }
-        </style>
-        <div class="container">
-            <div class="block_reviews">
-                <p class="block_working_text_h1">Отзывы</p>
-                <div class="svg_reviews_block"></div>
-                <h1>Что говорят наши клиенты</h1>
-                <h2>Нас выбирают за качество, скорость и профессионализм. Вот что говорят те, кто уже воспользовался нашими услугами.</h2>
-                @if($reviews->count() > 0)
-                    <div class="reviews-slider-container">
-                        <div class="reviews-slider" id="reviewsSlider">
-                            @foreach($reviews as $review)
-                                <div class="review-card">
-                                    <div class="review-header">
-                                        <div class="account-avatar">
-                                            @if($review->user && $review->user->avatar)
-                                                <img src="{{ asset('storage/' . $review->user->avatar) }}" 
-                                                    alt="Аватар" 
-                                                    style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-                                            @else
-                                                <img class="avatar" src="{{ asset('image/3/1.png') }}" alt="">
-                                                <style>
-                                                    .avatar{
-                                                        padding: 20px;
-                                                    }
-                                                </style>
-                                            @endif
-                                        </div>
-                                        <div class="review-client-info">
-                                            <h4>{{ $review->client_name }}</h4>
-                                            @if($review->client_position)
-                                                <p>{{ $review->client_position }}</p>
-                                            @endif
-                                        </div>
-
-                                        @auth
-                                            @if(Auth::user()->role === 'admin' || $review->user_id === Auth::id())
-                                                <div class="review-actions">
-                                                    <form action="{{ route('reviews.destroy', $review->id) }}" method="POST" class="delete-review-form">
-                                                        @csrf
-                                                        @method('DELETE')
-                                                        <button type="submit" class="delete-review-btn" onclick="return confirm('Вы уверены, что хотите удалить этот отзыв?')">
-                                                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                                                <path d="M3 6h18"></path>
-                                                                <path d="M19 6v14c0 1-1 2-2 2H7c-1 0-2-1-2-2V6"></path>
-                                                                <path d="M8 6V4c0-1 1-2 2-2h4c1 0 2 1 2 2v2"></path>
-                                                            </svg>
-                                                        </button>
-                                                    </form>
-                                                </div>
-                                            @endif
-                                        @endauth
-                                    </div>
-
-                                    <div class="review-rating">
-                                        @for($i = 1; $i <= 5; $i++)
-                                            <svg class="star {{ $i <= $review->rating ? '' : 'empty' }}" viewBox="0 0 20 20">
-                                                <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                            </svg>
-                                        @endfor
-                                    </div>
-                                    <p class="review-text">"{{ $review->review_text }}"</p>
-                                    <div class="review-date">
-                                        {{ $review->created_at->format('d.m.Y') }}
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-
-                        <div class="slider-nav">
-                            <button class="slider-btn" id="prevBtn"><span>‹</span></button>
-                            <div class="slider-dots" id="sliderDots"></div>
-                            <button class="slider-btn" id="nextBtn"><span>›</span></button>
-                        </div>
-                    </div>
-                @else
-                    <div style="text-align: center; padding: 40px 0;">
-                        <p style="color: #6B7280; font-size: 16px;">Пока нет отзывов. Будьте первым!</p>
-                    </div>
-                @endif
-                    @auth                                   
-                <div class="review-form-container">
-                    <h3 class="review-form-title">Оставьте свой отзыв</h3>
-                    <p class="review-form-subtitle">Поделитесь вашим опытом работы с нами</p>
-                    
-                    <form class="review-form" action="{{ route('reviews.store') }}" method="POST">
-                        @csrf
-                        
-                        <div class="form-group">
-                            <label for="client_name">Ваше имя *</label>
-                            <input type="text" id="client_name" name="client_name" required 
-                                placeholder="Введите ваше имя" value="{{ Auth::check() ? Auth::user()->name : '' }}">
-                            @error('client_name')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="client_position">Ваша должность/род деятельности</label>
-                            <input type="text" id="client_position" name="client_position" 
-                                placeholder="Например: Блогер, Предприниматель, Студент">
-                            @error('client_position')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label>Оценка *</label>
-                            <div class="rating-select">
-                                <div class="rating-stars" id="ratingStars">
-                                    @for($i = 1; $i <= 5; $i++)
-                                        <span class="rating-star" data-rating="{{ $i }}">★</span>
-                                    @endfor
-                                </div>
-                                <input type="hidden" name="rating" id="ratingInput" value="5" required>
-                            </div>
-                            @error('rating')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        
-                        <div class="form-group">
-                            <label for="review_text">Текст отзыва *</label>
-                            <textarea class="textarea" id="review_text" name="review_text" rows="5" required 
-                                    placeholder="Расскажите о вашем опыте работы с нами..."></textarea>
-                            @error('review_text')
-                                <span class="error-message">{{ $message }}</span>
-                            @enderror
-                        </div>
-                        <div class="submit-review-btn_two">
-                            Отправить отзыв
-                            <button type="submit" class="submit-review-btn">
-                                Спасибо за отзыв!
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                @endauth
-            </div>
-        </div>
-    </section>
+    @include('partials.reviews-section', ['reviews' => $reviews])
     <section class="dc-section dc-section--content inner_team">
         <style>
             .inner_team{
@@ -2033,7 +1844,7 @@
                     }
 
                     .news-image img {
-                        width: 100%;
+                        width: 334px;
                         height: 100%;
                         object-fit: cover;
                         transition: transform 0.5s ease;
@@ -2872,81 +2683,6 @@ function openModal() {
         });
 
 
-        initReviewsSlider();
     });
-
-
-    function initReviewsSlider() {
-        const slider = document.getElementById('reviewsSlider');
-        const prevBtn = document.getElementById('prevBtn');
-        const nextBtn = document.getElementById('nextBtn');
-        const dotsContainer = document.getElementById('sliderDots');
-        
-        if (!slider) return;
-        
-        const cards = slider.querySelectorAll('.review-card');
-        if (cards.length === 0) return;
-        
-        let currentIndex = 0;
-        const cardWidth = 350;
-        const visibleCards = Math.floor(slider.parentElement.offsetWidth / cardWidth);
-        
-
-        cards.forEach((_, index) => {
-            const dot = document.createElement('div');
-            dot.className = `slider-dot ${index === 0 ? 'active' : ''}`;
-            dot.addEventListener('click', () => goToSlide(index));
-            dotsContainer.appendChild(dot);
-        });
-        
-        const dots = document.querySelectorAll('.slider-dot');
-        
-
-        function updateSlider() {
-            const translateX = -currentIndex * cardWidth;
-            slider.style.transform = `translateX(${translateX}px)`;
-            
-
-            dots.forEach((dot, index) => {
-                dot.classList.toggle('active', index === currentIndex);
-            });
-            
-
-            prevBtn.disabled = currentIndex === 0;
-            nextBtn.disabled = currentIndex >= cards.length - visibleCards;
-        }
-        
-
-        function goToSlide(index) {
-            currentIndex = Math.max(0, Math.min(index, cards.length - visibleCards));
-            updateSlider();
-        }
-
-        prevBtn.addEventListener('click', () => {
-            if (currentIndex > 0) {
-                currentIndex--;
-                updateSlider();
-            }
-        });
-        
-        nextBtn.addEventListener('click', () => {
-            if (currentIndex < cards.length - visibleCards) {
-                currentIndex++;
-                updateSlider();
-            }
-        });
-        
-
-        window.addEventListener('resize', () => {
-            const newVisibleCards = Math.floor(slider.parentElement.offsetWidth / cardWidth);
-            if (currentIndex > cards.length - newVisibleCards) {
-                currentIndex = Math.max(0, cards.length - newVisibleCards);
-            }
-            updateSlider();
-        });
-        
-
-        updateSlider();
-    }
 </script>
 @endsection

@@ -15,6 +15,17 @@ class RegisterController extends Controller
 
     protected $redirectTo = RouteServiceProvider::HOME;
 
+    /**
+     * Редирект после регистрации: на мобильную главную, если запрос с мобильной формы.
+     */
+    public function redirectPath()
+    {
+        if (request()->has('redirect_mobile')) {
+            return route('mobile.home');
+        }
+        return $this->redirectTo;
+    }
+
     public function __construct()
     {
         $this->middleware('guest');

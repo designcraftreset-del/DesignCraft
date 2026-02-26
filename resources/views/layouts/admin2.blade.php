@@ -133,6 +133,10 @@
                 </a>
             </nav>
             <div class="p-2 mt-auto border-t border-slate-700 flex-shrink-0">
+                <a href="{{ route('switch.to.mobile') }}" class="admin2-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-sky-300 hover:bg-sky-900/20" title="Открыть мобильную версию сайта">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect width="14" height="20" x="5" y="2" rx="2" ry="2"/><path d="M12 18h.01"/></svg>
+                    <span>Мобильная версия</span>
+                </a>
                 <a href="{{ route('index') }}" method="post" class="admin2-link flex items-center gap-3 px-3 py-2.5 rounded-lg text-red-300 hover:bg-red-900/20">
                     <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
                     <span>Выход</span>
@@ -157,6 +161,7 @@
                         <div class="dropdown-menu" role="menu" aria-labelledby="admin2-header-user-btn">
                             <a class="dropdown-item" href="{{ route('admin.support-chat') }}">Чат с пользователями</a>
                             <a class="dropdown-item divider" href="{{ route('adminPanel2', ['page' => 'messages']) }}">Сообщения</a>
+                            <a class="dropdown-item" href="{{ route('switch.to.mobile') }}">Мобильная версия</a>
                             <a class="dropdown-item" href="{{ url('/') }}">На сайт</a>
                         </div>
                     </div>

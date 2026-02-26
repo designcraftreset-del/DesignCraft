@@ -1,0 +1,26 @@
+{
+  "name": "DesignCraft",
+  "short_name": "DesignCraft",
+  "description": "Профессиональный дизайн: превью, аватарки, баннеры, анимации",
+  "start_url": "/mobile/",
+  "scope": "/mobile/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#0f1419",
+  "theme_color": "#0f1419",
+  "lang": "ru",
+  "icons": [
+    {
+      "src": "/m-assets/icons/icon-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/m-assets/icons/icon-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

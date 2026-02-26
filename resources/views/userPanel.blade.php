@@ -159,46 +159,8 @@
         font-weight: 600;
     }
 
-    /* Стили для секции отзывов */
     .reviews-section {
         margin-bottom: 40px;
-    }
-
-    .review-card {
-        background: white;
-        border-radius: 12px;
-        padding: 20px;
-        margin-bottom: 15px;
-        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
-        border-left: 4px solid #3b82f6;
-    }
-
-    .review-header {
-        display: flex;
-        justify-content: between;
-        align-items: center;
-        margin-bottom: 10px;
-    }
-
-    .review-author {
-        font-weight: 700;
-        color: #1e3a8a;
-    }
-
-    .review-rating {
-        color: #f59e0b;
-        font-weight: 600;
-    }
-
-    .review-text {
-        color: #6b7280;
-        line-height: 1.5;
-        margin-bottom: 10px;
-    }
-
-    .review-date {
-        font-size: 12px;
-        color: #9ca3af;
     }
 
     /* Стили для статистики услуг */
@@ -271,7 +233,6 @@
 
     /* Темная тема */
     .dark-theme .stat-card-modern,
-    .dark-theme .review-card,
     .dark-theme .services-stats {
         background: #1f2937;
         border-color: #374151;
@@ -286,9 +247,6 @@
         color: #f9fafb;
     }
 
-    .dark-theme .review-author {
-        color: #fbbf24;
-    }
 </style>
 <style>
     .account-container {
@@ -975,17 +933,12 @@
 
         @if(isset($userReviews) && $userReviews->count() > 0)
         <div class="reviews-section fade-in-up">
-            <h3 style="color: #1e3a8a; margin-bottom: 20px; font-size: 20px; font-weight: 700;">Ваши последние отзывы</h3>
-            @foreach($userReviews as $review)
-            <div class="review-card">
-                <div class="review-header">
-                    <span class="review-author">{{ $review->client_name }}</span>
-                    <span class="review-rating">★ {{ $review->rating }}/5</span>
-                </div>
-                <div class="review-text">{{ $review->review_text }}</div>
-                <div class="review-date">{{ $review->created_at->format('d.m.Y') }}</div>
+            <h3 class="reviews-section__title">Ваши последние отзывы</h3>
+            <div class="reviews-grid">
+                @foreach($userReviews as $review)
+                    @include('partials.review-card', ['review' => $review])
+                @endforeach
             </div>
-            @endforeach
         </div>
         @endif
 
@@ -1493,25 +1446,6 @@
 .dark-theme .service-count {
     background: linear-gradient(135deg, #3b82f6, #1e40af);
     color: white;
-}
-
-/* Темная тема для отзывов */
-.dark-theme .review-card {
-    background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
-    border-left: 4px solid #3b82f6;
-    border: 1px solid #374151;
-}
-
-.dark-theme .review-author {
-    color: #60a5fa;
-}
-
-.dark-theme .review-text {
-    color: #d1d5db;
-}
-
-.dark-theme .review-date {
-    color: #9ca3af;
 }
 
 /* Модальное окно обрезки аватарки */

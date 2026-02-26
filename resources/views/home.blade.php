@@ -1267,6 +1267,53 @@
     strong{
         font-weight: 700 !important;
     }
+
+    /* Адаптив для телефона (страница /home без adaptive.css) */
+    @media (max-width: 768px) {
+        .hero_login_section { min-height: auto; padding: 1.5rem 0; align-items: flex-start; padding-top: 2rem; }
+        .hero_login { gap: 2rem; }
+        .hero_login_text h1,
+        .hero_login_text span,
+        .dark-theme .hero_login_text h1,
+        .dark-theme .hero_login_text span {
+            font-size: 1.75rem !important;
+            line-height: 1.35 !important;
+            max-width: 100%;
+        }
+        .hero_login_text_h2 { flex-wrap: wrap; justify-content: center; text-align: center; padding: 0.5rem 0.75rem; font-size: 0.8rem; }
+        .hero_login_block_gl,
+        .dark-theme .hero_login_block_gl {
+            width: 100% !important;
+            max-width: 100% !important;
+            padding: 1rem !important;
+            box-sizing: border-box;
+        }
+        .hero_login_buttons { flex-wrap: wrap; justify-content: center; gap: 12px; }
+        .hero_login_buttons_h1,
+        .hero_login_buttons_h2 { padding: 0.5rem 0.75rem; font-size: 0.9rem; }
+        .welcome-container { padding: 1rem; }
+        .dashboard-stats { grid-template-columns: 1fr; gap: 1rem; }
+        .content-grid { grid-template-columns: 1fr; }
+        .recent-content { padding: 1rem; margin-top: 1rem; }
+        .content-section { padding: 1rem; }
+        .stat-card { padding: 1.25rem; }
+        .stat-card .value { font-size: 1.75rem; }
+        .user-avatar { width: 80px; height: 80px; margin-top: 0.5rem; }
+        .avatar-placeholder { width: 80px; height: 80px; }
+    }
+    @media (max-width: 480px) {
+        .hero_login_text h1,
+        .hero_login_text span,
+        .dark-theme .hero_login_text h1,
+        .dark-theme .hero_login_text span {
+            font-size: 1.35rem !important;
+            line-height: 1.3 !important;
+        }
+        .hero_login_block_block_gl { grid-template-columns: 1fr; }
+        .hero_login_block_block_gl_two { grid-template-columns: 1fr; }
+        .hero_login__block { height: auto; min-height: 80px; padding: 1rem; }
+        .hero_login___block { height: auto; min-height: 72px; padding: 0.75rem; font-size: 0.9rem; }
+    }
     </style>
     <div class="container">
         <div class="hero_login_section">

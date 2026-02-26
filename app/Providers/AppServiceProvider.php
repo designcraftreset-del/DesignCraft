@@ -26,6 +26,18 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(UrlGenerator $url)
     {
+        // Хелпер определения устройства (мобильный/десктоп и принудительный выбор)
+        $this->app->bind('mobile.detect', function ($app) {
+            $request = $app['request'];
+            return new class($request) {
+                private $request;
+                public function __construct($request) { $this->request = $request; }
+                public function isMobile(): bool { return (bool) $this->request->attributes->get('is_mobile_device', false); }
+                public function wantsDesktop(): bool { return (bool) $this->request->attributes->get('wants_desktop', false); }
+                public function wantsMobile(): bool { return (bool) $this->request->attributes->get('wants_mobile', false); }
+            };
+        });
+
         if (config('app.env') === 'production') {
             $url->forceScheme('https');
         }

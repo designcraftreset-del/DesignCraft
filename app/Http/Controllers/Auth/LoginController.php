@@ -12,6 +12,17 @@ class LoginController extends Controller
 
     protected $redirectTo = RouteServiceProvider::HOME;
 
+    /**
+     * Редирект после входа: на мобильную главную, если запрос с мобильной формы.
+     */
+    public function redirectPath()
+    {
+        if (request()->has('redirect_mobile')) {
+            return route('mobile.home');
+        }
+        return $this->redirectTo;
+    }
+
     public function __construct()
     {
         $this->middleware('guest')->except('logout');

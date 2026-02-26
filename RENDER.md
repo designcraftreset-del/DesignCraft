@@ -1,104 +1,209 @@
 # Деплой DesignCraft на Render.com
 
-Проект подготовлен к деплою на Render: добавлены Dockerfile, скрипт запуска и принудительный HTTPS для production. База на Render — **PostgreSQL** (бесплатный тариф).
+Проект подготовлен к деплою на Render: Dockerfile, скрипт запуска, принудительный HTTPS. База на Render — **PostgreSQL**.
+
+В этом гайде: первый деплой, переменные окружения, **как обновить сайт после изменений в коде** (раздел 4), перенос базы данных.
 
 ---
 
-## Что нужно сделать (по шагам)
+## Ваш сервис (текущая настройка)
 
-### 1. Репозиторий на GitHub
+| Параметр | Значение |
+|----------|----------|
+| **Сайт** | https://designcraft-xej3.onrender.com |
+| **Репозиторий** | https://github.com/designcraftreset-del/DesignCraft (ветка `main`) |
+| **Environment** | [Настройки окружения](https://dashboard.render.com/web/srv-d6fm2q95pdvs73djbl90/env) |
+| **Auto-Deploy** | Включён (On Commit) — после `git push origin main` деплой запускается сам |
+| **Runtime** | Docker, Dockerfile: `./Dockerfile` |
+| **Регион** | Frankfurt (EU Central) |
+| **Deploy Hook** | В Render: Settings → Build & Deploy → Deploy Hook. Секретный URL для запуска деплоя без push (например, из скрипта или CI). |
 
-Если проекта ещё нет в GitHub:
-
-1. Зарегистрируйтесь на [github.com](https://github.com).
-2. Создайте новый репозиторий (например, `DesignCraft`).
-3. В корне проекта выполните (подставьте свой репозиторий):
-
-```bash
-git init
-git add .
-git commit -m "Prepare for Render deploy"
-git branch -M main
-git remote add origin https://github.com/ВАШ_ЛОГИН/DesignCraft.git
-git push -u origin main
-```
-
-Файл **`.env`** в репозиторий не попадает (он в `.gitignore`) — переменные окружения вы зададите в Render.
+В **Environment** укажите `APP_URL=https://designcraft-xej3.onrender.com`.
 
 ---
 
-### 2. База PostgreSQL на Render
+## Про ваш .env
 
-1. Зайдите на [dashboard.render.com](https://dashboard.render.com).
-2. **New → PostgreSQL**.
-3. Имя: например `designcraft-db`, регион выберите ближайший.
-4. Тариф: **Free** (если устраивают ограничения).
-5. Нажмите **Create Database**.
-6. В карточке базы откройте **Info** и скопируйте **Internal Database URL** (формат `postgres://user:pass@host/dbname`). Он понадобится в шаге 4.
+**Локально** в `.env` настроено:
+- `APP_URL=http://designcraft` — для OSPanel.
+- `DB_CONNECTION=pgsql` и закомментирован `DATABASE_URL` — для Render нужно подставлять свой URL.
 
----
-
-### 3. Web Service (сайт) на Render
-
-1. В Dashboard: **New → Web Service**.
-2. Подключите GitHub и выберите репозиторий с DesignCraft (если нет — настройте доступ в GitHub Settings).
-3. Настройки:
-   - **Name:** `designcraft` (или любое).
-   - **Region:** тот же, что у базы.
-   - **Runtime:** **Docker**.
-   - **Branch:** `main`.
-4. Поле **Build Command** оставьте пустым (сборка идёт через Dockerfile).
-5. **Start Command** оставьте пустым (используется `CMD` из Dockerfile).
+**На хосте Render** файл `.env` не используется: все переменные задаются в панели Render. То есть для хоста «всё настроено» не в `.env`, а в **Environment** вашего Web Service. Ниже — что именно туда добавить и как залить текущую базу.
 
 ---
 
-### 4. Переменные окружения (Environment)
+## 1. Переменные окружения на Render
 
-В разделе **Environment** Web Service добавьте переменные (кнопка **Add Environment Variable**):
+Откройте раздел **Environment** вашего Web Service и задайте переменные (кнопка **Add Environment Variable**):
+
+**Ссылка на настройки окружения:**  
+[https://dashboard.render.com/web/srv-d6fm2q95pdvs73djbl90/env](https://dashboard.render.com/web/srv-d6fm2q95pdvs73djbl90/env)
 
 | Key | Value |
 |-----|--------|
 | `APP_NAME` | DesignCraft |
 | `APP_ENV` | production |
 | `APP_DEBUG` | false |
-| `APP_KEY` | Сгенерируйте локально: `php artisan key:generate --show` и вставьте сюда |
-| `APP_URL` | https://ваш-сервис.onrender.com (после первого деплоя замените на точный URL из Render) |
+| `APP_KEY` | Сгенерируйте: `php artisan key:generate --show` (в папке проекта) и вставьте сюда |
+| `APP_URL` | https://designcraft-xej3.onrender.com |
 | `DB_CONNECTION` | pgsql |
-| `DATABASE_URL` | Вставьте **Internal Database URL** из шага 2 (из карточки PostgreSQL) |
+| `DATABASE_URL` | **Internal Database URL** из карточки вашей PostgreSQL на Render (формат `postgres://user:pass@host/dbname`) |
+| `LOG_CHANNEL` | stack |
+| `LOG_LEVEL` | warning |
+| `CACHE_DRIVER` | file |
+| `SESSION_DRIVER` | file |
+| `QUEUE_CONNECTION` | sync |
 | `MAIL_MAILER` | smtp |
 | `MAIL_HOST` | smtp.gmail.com |
 | `MAIL_PORT` | 587 |
 | `MAIL_USERNAME` | designcraftreset@gmail.com |
-| `MAIL_PASSWORD` | ваш пароль приложения Gmail |
+| `MAIL_PASSWORD` | пароль приложения Gmail |
 | `MAIL_ENCRYPTION` | tls |
 | `MAIL_FROM_ADDRESS` | designcraftreset@gmail.com |
 | `MAIL_FROM_NAME` | DesignCraft |
 
-`DATABASE_URL` и `DB_CONNECTION=pgsql` обязательны — без них миграции не подключатся к базе.
+`DATABASE_URL` и `DB_CONNECTION=pgsql` обязательны — без них приложение не подключится к базе на Render.
 
 ---
 
-### 5. Создать Web Service и дождаться деплоя
+## 2. База PostgreSQL на Render
 
-1. Нажмите **Create Web Service**.
-2. Render соберёт образ по Dockerfile и запустит контейнер. Первый деплой может занять 5–10 минут.
-3. В логах должны появиться строки: composer, config:cache, route:cache, migrate, затем запуск nginx/php-fpm.
-4. После успешного деплоя откройте ссылку вида **https://designcraft-xxxx.onrender.com** — должен открыться сайт.
-
----
-
-### 6. После первого запуска
-
-1. В настройках Web Service замените **APP_URL** на точный URL вашего сервиса (например, `https://designcraft-xxxx.onrender.com`).
-2. При необходимости создайте первого админа через `php artisan tinker` (на Render это делается через **Shell** в карточке сервиса) или через миграцию/сидер, если он у вас есть.
+1. [dashboard.render.com](https://dashboard.render.com) → **New → PostgreSQL** (если базы ещё нет).
+2. Имя: например `designcraft-db`, регион — тот же, что у Web Service.
+3. Тариф: **Free** (или платный).
+4. **Create Database**.
+5. В карточке базы:
+   - **Internal Database URL** — скопируйте и вставьте в переменную `DATABASE_URL` в Environment Web Service (шаг 1).
+   - **External Database URL** — понадобится для импорта данных с вашего ПК (шаг 5).
+6. Если будете импортировать с ПК: откройте **Databases** в меню Render → ваша база **PostgreSQL** (не Web Service). В карточке базы в **Info** или **Settings** найдите **Allow connections from** / **Trusted Sources** и добавьте ваш IP: `ВАШ_IP/32` (например `50.7.88.138/32`). Узнать IP: [ifconfig.me](https://ifconfig.me).
 
 ---
 
-## Важно
+## 3. Репозиторий и деплой
 
-- **Бесплатный инстанс** на Render «засыпает» после ~15 минут без запросов. Первый запрос после простоя может выполняться 30–60 секунд.
-- База **PostgreSQL**: проект изначально на MySQL, но Laravel и миграции совместимы с PostgreSQL. Если какая-то миграция упадёт (например, из-за `enum`), её нужно будет поправить под PostgreSQL.
-- Письма отправляются через Gmail (SMTP) — пароль приложения укажите в `MAIL_PASSWORD`.
-- Файлы, загружаемые пользователями (аватарки, превью), на бесплатном инстансе хранятся в контейнере и могут теряться при перезапуске. Для постоянного хранения нужен внешний диск (Render Disks) или S3-совместимое хранилище.
+1. Закоммитьте и запушьте код в GitHub (если ещё не сделано):
+   ```bash
+   git add .
+   git commit -m "Deploy to Render"
+   git push origin main
+   ```
+2. В Render: **New → Web Service** (или откройте существующий `srv-d6fm2q95pdvs73djbl90`).
+3. Подключите репозиторий с DesignCraft.
+4. Настройки сервиса:
+   - **Runtime:** Docker.
+   - **Branch:** main.
+   - **Build Command** и **Start Command** — пусто (используется Dockerfile).
+5. В **Environment** добавьте все переменные из шага 1, включая `DATABASE_URL` из PostgreSQL.
+6. **Create Web Service** (или **Save**). Дождитесь сборки и запуска (5–10 минут при первом деплое).
+7. После деплоя откройте https://designcraft-xej3.onrender.com и в Environment укажите `APP_URL=https://designcraft-xej3.onrender.com`.
 
-После выполнения шагов сайт будет доступен по ссылке Render любому пользователю в интернете.
+---
+
+## 4. Как обновить сайт на Render (поменять код на боевом)
+
+После любых изменений в коде (вёрстка, логика, миграции и т.д.) нужно заново задеплоить сервис — тогда сайт на Render подхватит изменения.
+
+### Вариант А: Автодеплой с GitHub (рекомендуется)
+
+1. В папке проекта закоммитьте и запушьте изменения:
+   ```bash
+   git add .
+   git commit -m "Описание изменений"
+   git push origin main
+   ```
+2. Если к Render подключён репозиторий и включён **Auto-Deploy**, через 1–2 минуты начнётся сборка. Статус смотрите в [Dashboard](https://dashboard.render.com) → ваш Web Service → **Logs**.
+3. После успешного деплоя сайт обновится по адресу **https://designcraft-xej3.onrender.com**.
+
+### Вариант Б: Ручной деплой
+
+1. Откройте [Dashboard Render](https://dashboard.render.com) → Web Service **DesignCraft**.
+2. Вкладка **Manual Deploy** → **Deploy latest commit** (или выберите ветку/коммит).
+3. Дождитесь окончания сборки и запуска — сайт обновится.
+
+### Если добавляли миграции
+
+Новые миграции Laravel выполняются при каждом деплое автоматически (скрипт в `docker/render-start.sh` запускает `php artisan migrate --force`). Отдельно что-то делать не нужно.
+
+### Деплой по Deploy Hook (без git push)
+
+В Render: **Settings** → **Build & Deploy** → **Deploy Hook**. Скопируйте секретный URL и вызывайте его (GET или POST), когда нужно запустить деплой без push в GitHub (например, из скрипта или CI). URL храните в секрете.
+
+### Кратко
+
+| Действие | Результат |
+|----------|-----------|
+| `git push origin main` | При включённом Auto-Deploy сайт на Render обновится сам |
+| Manual Deploy в панели Render | То же, без push (деплой последнего коммита ветки `main`) |
+| Запрос по Deploy Hook URL | Запуск деплоя без push |
+
+---
+
+## 5. Перенос текущей базы данных на Render
+
+Чтобы залить **текущую локальную базу** (OSPanel/MySQL) в PostgreSQL на Render:
+
+### 5.1. Экспорт с локального сайта
+
+В корне проекта (где лежит `artisan`) выполните:
+
+```bash
+php artisan db:export
+```
+
+Появится папка **`storage/app/db-export`** с JSON-файлами по таблицам (users, applications и т.д.).
+
+### 5.2. Подключение к базе Render с вашего ПК
+
+1. В [dashboard.render.com](https://dashboard.render.com) откройте вашу PostgreSQL.
+2. Скопируйте **External Database URL** (для подключения с ПК), например:
+   ```
+   postgresql://designcraft_db_user:ПАРОЛЬ@dpg-xxxx.frankfurt-postgres.render.com/designcraft_db?sslmode=require
+   ```
+3. В **локальном** `.env` временно пропишите (для импорта):
+   ```env
+   DB_CONNECTION=pgsql
+   DATABASE_URL=postgresql://designcraft_db_user:ПАРОЛЬ@dpg-xxxx.frankfurt-postgres.render.com/designcraft_db?sslmode=require
+   ```
+   Подставьте свой URL и пароль из Render. Остальные строки БД (DB_HOST, DB_PORT и т.д.) можно закомментировать или оставить — при наличии `DATABASE_URL` Laravel использует его.
+
+### 5.3. Импорт в PostgreSQL на Render
+
+В папке проекта выполните:
+
+```bash
+php artisan db:import --force
+```
+
+`--force` очищает целевые таблицы перед вставкой, чтобы не было дубликатов.
+
+### 5.4. После импорта
+
+- Верните в `.env` настройки для локальной MySQL/OSPanel, если продолжаете разрабатывать локально.
+- Откройте сайт на Render — пользователи, заказы и остальные данные из текущей БД должны отображаться.
+
+**Важно:** переносятся только данные в БД. Файлы (аватарки, превью) на Render не копируются; загруженные на Render файлы на бесплатном тарифе живут только до перезапуска контейнера.
+
+---
+
+## 6. После первого запуска
+
+1. В Environment Web Service укажите `APP_URL=https://designcraft-xej3.onrender.com`.
+2. При необходимости создайте или проверьте учётную запись админа (через Shell на Render: `php artisan tinker` или миграции/сидеры).
+
+---
+
+## Кратко
+
+| Что | Где / как |
+|-----|-----------|
+| Переменные для хоста | [Environment Web Service](https://dashboard.render.com/web/srv-d6fm2q95pdvs73djbl90/env) |
+| Локальный .env | Для OSPanel; на Render не используется |
+| База на Render | PostgreSQL; `DATABASE_URL` из карточки базы |
+| **Обновить сайт** | `git add .` → `git commit -m "..."` → `git push origin main` (при включённом Auto-Deploy сайт обновится сам) или Manual Deploy в панели Render |
+| Текущая БД → Render | `php artisan db:export` → в .env временно `DATABASE_URL` (External) → `php artisan db:import --force` |
+
+- Бесплатный инстанс «засыпает» после ~15 минут без запросов; первый запрос после простоя может идти 30–60 секунд.
+- Письма: Gmail SMTP, пароль приложения в `MAIL_PASSWORD`.
+- Файлы пользователей на бесплатном плане не сохраняются между перезапусками; для постоянного хранения нужен Render Disk или S3.
+
+После выполнения шагов сайт с текущей базой будет доступен по ссылке Render.

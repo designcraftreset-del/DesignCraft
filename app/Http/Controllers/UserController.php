@@ -166,6 +166,9 @@ class UserController extends Controller
         $user->email = $request->email;
         $user->phone = $request->phone ? trim($request->phone) : null;
         $user->save();
+        if ($request->filled('redirect_mobile')) {
+            return redirect()->route('mobile.account')->with('success', 'Профиль обновлён.');
+        }
         return redirect()->route('userPanel')->with('success', 'Профиль обновлён.');
     }
 
@@ -182,6 +185,9 @@ class UserController extends Controller
         }
         $user->password = Hash::make($request->password);
         $user->save();
+        if ($request->filled('redirect_mobile')) {
+            return redirect()->route('mobile.settings')->with('success', 'Пароль успешно изменён.');
+        }
         return redirect()->route('userPanel')->with('success', 'Пароль успешно изменён.');
     }
 
@@ -192,9 +198,11 @@ class UserController extends Controller
         $status = Password::sendResetLink(['email' => $user->email]);
 
         if ($status === Password::RESET_LINK_SENT) {
-            return redirect()->route('userPanel')->with('success', 'Ссылка для сброса пароля отправлена на ' . $user->email . '. Проверьте почту и перейдите по ссылке, чтобы задать новый пароль.');
+            $redirect = $request->filled('redirect_mobile') ? route('mobile.settings') : route('userPanel');
+            return redirect($redirect)->with('success', 'Ссылка для сброса пароля отправлена на ' . $user->email . '. Проверьте почту и перейдите по ссылке, чтобы задать новый пароль.');
         }
 
-        return redirect()->route('userPanel')->with('error', 'Не удалось отправить письмо. Попробуйте позже или обратитесь в поддержку.');
+        $redirect = $request->filled('redirect_mobile') ? route('mobile.settings') : route('userPanel');
+        return redirect($redirect)->with('error', 'Не удалось отправить письмо. Попробуйте позже или обратитесь в поддержку.');
     }
 }
