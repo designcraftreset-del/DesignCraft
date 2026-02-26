@@ -137,8 +137,9 @@ class ChatController extends Controller
             $arr = $m->toArray();
             $arr['image_url'] = $m->image_path ? $storageBase . '/' . str_replace('\\', '/', ltrim($m->image_path, '/')) : null;
             $arr['file_url'] = $m->file_path ? $storageBase . '/' . str_replace('\\', '/', ltrim($m->file_path, '/')) : null;
-            $canDelete = $isAdmin || ($user && $m->user_id === $user->id && $m->created_at->diffInDays(now()) <= 3);
-            $canEdit = !$m->is_system && ($isAdmin || ($user && $m->user_id === $user->id && $m->created_at->diffInDays(now()) <= 3));
+            $daysAgo = $m->created_at ? $m->created_at->diffInDays(now()) : 999;
+            $canDelete = $isAdmin || ($user && $m->user_id === $user->id && $daysAgo <= 3);
+            $canEdit = !$m->is_system && ($isAdmin || ($user && $m->user_id === $user->id && $daysAgo <= 3));
             $arr['can_delete'] = $canDelete;
             $arr['can_edit'] = $canEdit;
             return $arr;
@@ -189,7 +190,7 @@ class ChatController extends Controller
                 'last_message' => $last ? [
                     'id' => $last->id,
                     'message' => $last->message,
-                    'created_at' => $last->created_at->toIso8601String(),
+                    'created_at' => $last->created_at ? $last->created_at->toIso8601String() : null,
                 ] : null,
                 'needs_human' => $thread ? $thread->needs_human : false,
                 'unread_count' => $unreadCount,
@@ -809,7 +810,7 @@ class ChatController extends Controller
             if ($message->user_id !== $user->id) {
                 return response()->json(['error' => 'Можно удалять только свои сообщения'], 403);
             }
-            if ($message->created_at->diffInDays(now()) > 3) {
+            if (!$message->created_at || $message->created_at->diffInDays(now()) > 3) {
                 return response()->json(['error' => 'Удаление возможно только в течение 3 дней'], 403);
             }
         }
@@ -843,7 +844,7 @@ class ChatController extends Controller
             if ($message->user_id !== $user->id) {
                 return response()->json(['error' => 'Можно редактировать только свои сообщения'], 403);
             }
-            if ($message->created_at->diffInDays(now()) > 3) {
+            if (!$message->created_at || $message->created_at->diffInDays(now()) > 3) {
                 return response()->json(['error' => 'Редактирование возможно только в течение 3 дней'], 403);
             }
         }
