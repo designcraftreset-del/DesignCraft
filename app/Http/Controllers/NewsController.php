@@ -141,6 +141,11 @@ class NewsController extends Controller
             $counter++;
         }
 
+        $publishedAt = $request->filled('published_at') ? $request->published_at : null;
+        if ($publishedAt === null) {
+            $publishedAt = now();
+        }
+
         $news = News::create([
             'title' => $request->title,
             'slug' => $slug,
@@ -150,7 +155,7 @@ class NewsController extends Controller
             'category' => $request->category,
             'is_featured' => $request->boolean('is_featured'),
             'author_id' => Auth::id(),
-            'published_at' => $request->published_at ?? now(),
+            'published_at' => $publishedAt,
         ]);
 
         return redirect()->route('websiteNews')->with('success', 'Новость успешно создана!');
@@ -199,12 +204,17 @@ class NewsController extends Controller
         }
 
         if ($request->hasFile('image')) {
-            // Удаляем старое изображение
             if ($news->image_path) {
-                Storage::disk('public')->delete($news->image_path);
+                try {
+                    Storage::disk('public')->delete($news->image_path);
+                } catch (\Throwable $e) {
+                    // файл мог отсутствовать (например после перезапуска на Render)
+                }
             }
             $news->image_path = $request->file('image')->store('news', 'public');
         }
+
+        $publishedAt = $request->filled('published_at') ? $request->published_at : null;
 
         $news->update([
             'title' => $request->title,
@@ -213,7 +223,7 @@ class NewsController extends Controller
             'content' => $request->content,
             'category' => $request->category,
             'is_featured' => $request->boolean('is_featured'),
-            'published_at' => $request->published_at,
+            'published_at' => $publishedAt,
         ]);
 
         return redirect()->route('websiteNews')->with('success', 'Новость успешно обновлена!');
@@ -225,9 +235,12 @@ class NewsController extends Controller
             abort(403, 'У вас нет прав для удаления новостей');
         }
 
-        // Удаляем изображение
         if ($news->image_path) {
-            Storage::disk('public')->delete($news->image_path);
+            try {
+                Storage::disk('public')->delete($news->image_path);
+            } catch (\Throwable $e) {
+                // не ломаем удаление новости, если файла нет
+            }
         }
 
         $news->delete();

@@ -347,9 +347,37 @@ class ApplicationController extends Controller
         $PublicFunc = Application::where('userid', Auth::id())->get();
         $reviews = Review::approved()->orderBy('created_at', 'desc')->get();
         $PublicFunc = Application::all();
-        $servicess = Services::all();
+        $servicess = Services::orderBy('id', 'desc')->get();
         $users = User::withCount('orders')->get();
-        $servicesList = [
+
+        // Услуги из БД (созданные в админке) — в том же формате, что и захардкоженный список
+        $fromDb = $servicess->map(function ($s) {
+            $features = array_filter([
+                $s->concept ? (is_string($s->concept) ? $s->concept : 'Концепции: ' . $s->concept) : null,
+                $s->edits ? (is_string($s->edits) ? $s->edits : 'Правки: ' . $s->edits) : null,
+                $s->formatTwo ?? null,
+                $s->term ? (is_string($s->term) ? $s->term : 'Срок: ' . $s->term) : null,
+            ]);
+            $cat = strtolower(trim((string) ($s->category ?? '')));
+            $selectValue = $cat ?: 'design';
+            if (str_contains($cat, 'превью') || str_contains($cat, 'дизайн') || str_contains($cat, 'design')) $selectValue = 'design';
+            elseif (str_contains($cat, 'аватар') || str_contains($cat, 'ava')) $selectValue = 'ava';
+            elseif (str_contains($cat, 'баннер') || str_contains($cat, 'banner')) $selectValue = 'banner';
+            elseif (str_contains($cat, 'анимац') || str_contains($cat, 'animation') || str_contains($cat, 'видео')) $selectValue = 'animation';
+            elseif (str_contains($cat, 'лого') || str_contains($cat, 'logo')) $selectValue = 'logo';
+
+            return [
+                'badge' => '',
+                'name' => $s->titleTwo ?: $s->title,
+                'desc' => $s->subtitle ?? '',
+                'price' => $s->money ?? '',
+                'features' => array_values($features),
+                'select_value' => $selectValue,
+                'package' => $s->category ?? '',
+            ];
+        })->all();
+
+        $hardcodedList = [
             ['badge' => 'Лучший рейтинг', 'name' => 'Базовый дизайн превью', 'desc' => 'Простой и эффективный дизайн превью для видео, статей или продуктов', 'price' => '2000', 'features' => ['1 концепция', '2 правки', 'Исходник в JPG', 'Срок: 2 дня'], 'select_value' => 'design', 'package' => 'Базовый'],
             ['badge' => 'Популярный выбор', 'name' => 'Превью Про', 'desc' => 'Профессиональный дизайн превью с уникальными элементами и эффектами', 'price' => '3500', 'features' => ['2 концепции на выбор', 'Неограниченные правки', 'Исходник в PSD', 'Срок: 3 дня'], 'select_value' => 'design', 'package' => 'Про'],
             ['badge' => 'Самый выгодный', 'name' => 'Базовая аватарка', 'desc' => 'Стильная аватарка для социальных сетей или игровых профилей', 'price' => '1500', 'features' => ['1 дизайн', '2 правки', 'Исходник в JPG/PNG', 'Срок: 1-2 дня'], 'select_value' => 'ava', 'package' => 'Базовый'],
@@ -361,6 +389,8 @@ class ApplicationController extends Controller
             ['badge' => '', 'name' => 'Базовый логотип', 'desc' => 'Логотип для бренда или проекта с основными форматами', 'price' => '4500', 'features' => ['2 концепции', '3 правки', 'JPG, PNG, SVG', 'Срок: 5-7 дней'], 'select_value' => 'logo', 'package' => 'Базовый'],
             ['badge' => '', 'name' => 'Продвинутый логотип', 'desc' => 'Профессиональный логотип с брендбуком и различными форматами', 'price' => '8000', 'features' => ['3+ концепции', 'Неограниченные правки', 'Все форматы файлов', 'Срок: 7-10 дней'], 'select_value' => 'logo', 'package' => 'Продвинутая'],
         ];
+
+        $servicesList = array_merge($fromDb, $hardcodedList);
         return view("services", compact("PublicFunc", "servicess", "servicesList"));
     }
     public function servicesCreateFunc(){
