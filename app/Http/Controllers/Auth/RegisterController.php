@@ -8,6 +8,7 @@ use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
+use Illuminate\Support\Facades\Log;
 
 class RegisterController extends Controller
 {
@@ -45,14 +46,22 @@ class RegisterController extends Controller
     
     protected function create(array $data)
     {
-        $role = strtolower($data['name']) === 'admin' ? 'admin' : 'user';
+        $role = strtolower(trim($data['name'] ?? '')) === 'admin' ? 'admin' : 'user';
 
-        return User::create([
-            'name' => $data['name'],
-            'email' => $data['email'],
-            'password' => Hash::make($data['password']),
-            'role' => $role,
-        ]);
+        try {
+            return User::create([
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'password' => Hash::make($data['password']),
+                'role' => $role,
+            ]);
+        } catch (\Throwable $e) {
+            Log::error('Registration create failed: ' . $e->getMessage(), [
+                'exception' => $e->getMessage(),
+                'trace' => $e->getTraceAsString(),
+            ]);
+            throw $e;
+        }
     }
 
     /**
