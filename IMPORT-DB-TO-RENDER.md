@@ -95,17 +95,18 @@ php artisan db:import --force
 
 ---
 
-## Вариант: импорт через Shell на Render (если с ПК обрывается)
+## Вариант: импорт изнутри Render по URL (если с ПК обрывается)
 
-Если `php artisan db:import --force` с вашего ПК даёт «server closed the connection», импорт можно выполнить **изнутри Render** (подключение к базе будет внутренним).
+На тарифе **Free** вкладка **Shell** недоступна. Импорт выполняется по одноразовой ссылке **/import-db**.
 
-1. **Дождитесь деплоя** после пуша с папкой `storage/app/db-export` в репозитории.
-2. В Render: **Dashboard** → Web Service **DesignCraft** → вкладка **Shell** → **Connect**.
-3. В открывшейся консоли выполните:
-   ```bash
-   php artisan db:import --force
-   ```
-4. После успешного импорта папка `db-export` удалена из репозитория отдельным коммитом (данные в базе уже есть).
+1. Локально: `php artisan db:export` (или `db:import-from-sql "путь\к\файлу.sql"`) — появятся JSON в `storage\app\db-export`.
+2. Скопируйте все файлы из `storage\app\db-export` в папку **`database\db-export`** в проекте.
+3. Закоммитьте и запушьте: `git add database/db-export/` → `git commit -m "Add db export"` → `git push origin main`.
+4. В **Environment** Web Service добавьте: `IMPORT_DB_TOKEN` = любой секрет (например `importSecret456`).
+5. После деплоя откройте в браузере **один раз**: `https://ваш-сайт.onrender.com/import-db?token=importSecret456`.
+6. После успешного импорта удалите `IMPORT_DB_TOKEN` из Environment.
+
+**Полная инструкция со всеми шагами и переменными:** см. файл **RENDER-FULL-GUIDE.md** в корне проекта.
 
 ---
 

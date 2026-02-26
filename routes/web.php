@@ -15,8 +15,49 @@ use App\Http\Controllers\HomeController;
 use App\Http\Controllers\ChatController;
 use App\Http\Controllers\OrderChatController;
 use App\Http\Controllers\ServicesController;
+use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
+
+// Одноразовый импорт БД из database/db-export (для Render Free). В Environment: IMPORT_DB_TOKEN=секрет. Положите JSON в database/db-export, задеплойте, откройте /import-db?token=секрет один раз, затем удалите переменную и маршрут.
+Route::get('/import-db', function (Request $request) {
+    $token = env('IMPORT_DB_TOKEN');
+    if (!$token || $request->query('token') !== $token) {
+        abort(404);
+    }
+    $path = base_path('database/db-export');
+    $service = app(\App\Services\DbImportService::class);
+    if (function_exists('set_time_limit')) {
+        @set_time_limit(300);
+    }
+    $result = $service->run($path, true);
+    $body = implode("\n", $result['messages']) . "\n";
+    if (isset($result['error'])) {
+        $body .= "\nError: " . $result['error'];
+        return response($body, 500, ['Content-Type' => 'text/plain; charset=utf-8']);
+    }
+    $body .= "\nИмпорт завершён. Удалите IMPORT_DB_TOKEN из Environment и этот маршрут из кода.";
+    return response($body, 200, ['Content-Type' => 'text/plain; charset=utf-8']);
+});
+
+// Одноразовый создатель админа (для Render Free, где нет Shell). Установите в Environment: SETUP_ADMIN_TOKEN=ваш_секрет. Откройте /setup-admin?token=ваш_секрет один раз, затем удалите SETUP_ADMIN_TOKEN.
+Route::get('/setup-admin', function (Request $request) {
+    $token = env('SETUP_ADMIN_TOKEN');
+    if (!$token || $request->query('token') !== $token) {
+        abort(404);
+    }
+    User::updateOrCreate(
+        ['email' => 'ii5543135@gmail.com'],
+        [
+            'name' => 'Admin',
+            'password' => Hash::make('ii5543135@gmail.com'),
+            'role' => 'admin',
+            'email_verified_at' => null,
+        ]
+    );
+    return response('Admin создан. Логин: ii5543135@gmail.com, пароль: ii5543135@gmail.com. Удалите переменную SETUP_ADMIN_TOKEN из Environment и этот маршрут из кода.', 200, ['Content-Type' => 'text/plain; charset=utf-8']);
+});
 
 // Главная (публичная)
 Route::get("/index",  [ApplicationController::class, 'indexFunc'])->name('index')->middleware('auth');
