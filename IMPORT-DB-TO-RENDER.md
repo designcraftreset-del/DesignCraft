@@ -115,5 +115,6 @@ php artisan db:import --force
 - **«File not found»** — проверьте путь к .sql (кавычки, пробелы, скобки в имени).
 - **Ошибка подключения к БД** — проверьте `DATABASE_URL` в `.env`, что пароль не обрезан и в Render в базе разрешён ваш IP (Allow connections from).
 - **Ошибка при импорте** — убедитесь, что перед `db:import --force` вы выполнили `db:import-from-sql` и в `storage\app\db-export` есть .json файлы.
+- **После импорта не входится под админом** — см. **RENDER.md** (раздел 6) или **ОСТАЛОСЬ-СДЕЛАТЬ.md**: добавьте `SETUP_ADMIN_TOKEN` в Environment, откройте `/setup-admin?token=...` один раз, затем удалите переменную.
 
 После импорта можно вернуть в `.env` локальное подключение к MySQL (закомментировать `DATABASE_URL`, выставить `DB_CONNECTION=mysql` и т.д.), если снова работаете локально.

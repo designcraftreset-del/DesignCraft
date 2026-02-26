@@ -545,7 +545,7 @@
         if (supportMessagesPollTimer) clearInterval(supportMessagesPollTimer);
         supportMessagesPollTimer = setInterval(function() {
             var tid = window._supportChatCurrentThreadId;
-            if (tid) loadSupportMessages(tid);
+            if (tid) loadSupportMessages(tid, { appendOnly: true });
         }, 4000);
     }
     function stopSupportMessagesPoll() { if (supportMessagesPollTimer) { clearInterval(supportMessagesPollTimer); supportMessagesPollTimer = null; } }
@@ -624,14 +624,20 @@
         var base = origin + (pathname.indexOf('/public') === 0 ? '/public/storage' : '/storage');
         return base + '/' + pathStr;
     }
-    function loadSupportMessages(threadId) {
+    function loadSupportMessages(threadId, opts) {
+        opts = opts || {};
+        var appendOnly = !!opts.appendOnly;
         var wrap = document.getElementById('support-chat-messages');
         var placeholder = document.getElementById('support-chat-placeholder');
-        wrap.querySelectorAll('.support-msg-item').forEach(function(n) { n.remove(); });
+        if (!appendOnly) wrap.querySelectorAll('.support-msg-item').forEach(function(n) { n.remove(); });
         fetch('{{ route("support.chat.messages") }}?thread_id=' + encodeURIComponent(threadId), { credentials: 'same-origin', headers: { 'Accept': 'application/json' } })
             .then(function(r) { return r.json(); })
             .then(function(messages) {
                 if (!Array.isArray(messages)) return;
+                var existingIds = {};
+                if (appendOnly && wrap) wrap.querySelectorAll('.support-msg-item').forEach(function(n) { var id = n.getAttribute('data-message-id'); if (id) existingIds[id] = true; });
+                var toRender = appendOnly ? messages.filter(function(m) { return !existingIds[String(m.id)]; }) : messages;
+                if (appendOnly && toRender.length === 0) return;
                 placeholder.classList.add('hidden');
                 function parseBotButtons(msgRaw) {
                     var displayText = msgRaw;
@@ -662,7 +668,7 @@
                     }
                     return { displayText: displayText, buttons: buttons };
                 }
-                messages.forEach(function(m) {
+                toRender.forEach(function(m) {
                     var div = document.createElement('div');
                     div.className = 'support-msg-item flex gap-2 ' + (m.user && m.user.role === 'admin' || m.user && m.user.role === 'moderator' ? 'flex-row-reverse' : '');
                     var avatarSrc = (m.user && m.user.avatar) ? storageUrl(m.user.avatar) : '';
@@ -750,36 +756,42 @@
         var replyPreviewWrap = document.getElementById('support-reply-preview-wrap');
         var replyPreviewImg = document.getElementById('support-reply-preview-img');
         fetch('{{ route("support.chat.reply") }}', { method: 'POST', body: fd, headers: { 'X-CSRF-TOKEN': csrfToken, 'Accept': 'application/json' } })
-            .then(function(r) { return r.json(); })
+            .then(function(r) {
+                if (!r.ok) return r.json().then(function(d) { throw new Error(d && d.error ? d.error : 'Ошибка ' + r.status); }).catch(function(e) { if (e instanceof Error && e.message.indexOf('Ошибка ') === 0) throw e; throw new Error('Ошибка ' + r.status); });
+                return r.json();
+            })
             .then(function(data) {
-                if (data.success && data.message) {
-                    var m = data.message;
-                    var div = document.createElement('div');
-                    div.className = 'support-msg-item flex gap-2 flex-row-reverse';
-                    div.setAttribute('data-message-id', m.id);
-                    div.setAttribute('data-can-delete', (m.can_delete ? '1' : '0'));
-                    div.setAttribute('data-can-edit', (m.can_edit ? '1' : '0'));
-                    var avatarSrc = (m.user && m.user.avatar) ? storageUrl(m.user.avatar) : '';
-                    var imgSrc = (m.image_path ? storageUrl(m.image_path) : '') || (m.image_url || '');
-                    var fileUrl = (m.file_path ? storageUrl(m.file_path) : '') || (m.file_url || '');
-                    var fileBlock = fileUrl ? '<a href="' + fileUrl + '" target="_blank" rel="noopener" class="block mt-2 text-sm underline opacity-90">📎 ' + (m.file_name || 'Файл').replace(/</g, '&lt;') + '</a>' : '';
-                    var time = m.created_at ? new Date(m.created_at).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
-                    var imgBlock = imgSrc ? '<a href="' + imgSrc + '" target="_blank" rel="noopener" class="admin2-msg-img-thumb block mt-2 rounded overflow-hidden border border-white/20" data-full="' + imgSrc + '"><img src="' + imgSrc + '" alt="Фото" class="rounded max-h-32 w-auto object-cover cursor-pointer"></a>' : '';
-                    var msgTextBlock = m.message ? '<p class="mt-1 support-msg-text">' + (m.message + '').replace(/</g, '&lt;') + '</p>' : '';
-                    div.innerHTML = '<img src="' + (avatarSrc || '') + '" alt="" class="w-8 h-8 rounded-full object-cover flex-shrink-0" onerror="this.style.display=\'none\'">' +
-                        '<div class="max-w-[80%] rounded-lg px-3 py-2 bg-primary text-white support-msg-bubble"><p class="font-medium text-sm">' + (m.user && m.user.name ? m.user.name.replace(/</g, '&lt;') : '') + '</p><p class="text-xs opacity-80">' + time + '</p>' + msgTextBlock + imgBlock + fileBlock + '</div>';
-                    if (wrap) wrap.appendChild(div);
-                    if (wrap) { wrap.scrollTop = wrap.scrollHeight; }
-                    var replyText = document.getElementById('support-reply-text');
-                    if (replyText) replyText.value = '';
-                    if (replyImg) replyImg.value = '';
-                    if (replyFile) replyFile.value = '';
-                    if (replyPreviewWrap) replyPreviewWrap.classList.add('hidden');
-                    if (replyPreviewImg) replyPreviewImg.src = '';
-                    saveDraft(threadId, '');
-                    setTimeout(function() { if (wrap) wrap.scrollTop = wrap.scrollHeight; }, 50);
-                }
-            });
+                if (!data.success) throw new Error((data && data.error) ? data.error : 'Не удалось отправить');
+                if (!data.message) return;
+                var m = data.message;
+                var div = document.createElement('div');
+                div.className = 'support-msg-item flex gap-2 flex-row-reverse';
+                div.setAttribute('data-message-id', m.id);
+                div.setAttribute('data-can-delete', (m.can_delete ? '1' : '0'));
+                div.setAttribute('data-can-edit', (m.can_edit ? '1' : '0'));
+                var avatarSrc = (m.user && m.user.avatar) ? storageUrl(m.user.avatar) : '';
+                var imgSrc = (m.image_path ? storageUrl(m.image_path) : '') || (m.image_url || '');
+                var fileUrl = (m.file_path ? storageUrl(m.file_path) : '') || (m.file_url || '');
+                var fileBlock = fileUrl ? '<a href="' + fileUrl + '" target="_blank" rel="noopener" class="block mt-2 text-sm underline opacity-90">📎 ' + (m.file_name || 'Файл').replace(/</g, '&lt;') + '</a>' : '';
+                var time = m.created_at ? new Date(m.created_at).toLocaleString('ru-RU', { day: '2-digit', month: '2-digit', hour: '2-digit', minute: '2-digit' }) : '';
+                var imgBlock = imgSrc ? '<a href="' + imgSrc + '" target="_blank" rel="noopener" class="admin2-msg-img-thumb block mt-2 rounded overflow-hidden border border-white/20" data-full="' + imgSrc + '"><img src="' + imgSrc + '" alt="Фото" class="rounded max-h-32 w-auto object-cover cursor-pointer"></a>' : '';
+                var msgTextBlock = m.message ? '<p class="mt-1 support-msg-text">' + (m.message + '').replace(/</g, '&lt;') + '</p>' : '';
+                div.innerHTML = '<img src="' + (avatarSrc || '') + '" alt="" class="w-8 h-8 rounded-full object-cover flex-shrink-0" onerror="this.style.display=\'none\'">' +
+                    '<div class="max-w-[80%] rounded-lg px-3 py-2 bg-primary text-white support-msg-bubble"><p class="font-medium text-sm">' + (m.user && m.user.name ? m.user.name.replace(/</g, '&lt;') : '') + '</p><p class="text-xs opacity-80">' + time + '</p>' + msgTextBlock + imgBlock + fileBlock + '</div>';
+                if (wrap) wrap.appendChild(div);
+                if (wrap) { wrap.scrollTop = wrap.scrollHeight; }
+                var replyText = document.getElementById('support-reply-text');
+                if (replyText) replyText.value = '';
+                if (replyImg) replyImg.value = '';
+                if (replyFile) replyFile.value = '';
+                if (replyPreviewWrap) replyPreviewWrap.classList.add('hidden');
+                if (replyPreviewImg) replyPreviewImg.src = '';
+                saveDraft(threadId, '');
+                setTimeout(function() { if (wrap) wrap.scrollTop = wrap.scrollHeight; }, 50);
+                stopSupportMessagesPoll();
+                setTimeout(startSupportMessagesPoll, 5000);
+            })
+            .catch(function(err) { alert('Не удалось отправить: ' + (err && err.message ? err.message : 'ошибка сети')); });
     });
     (function() {
         var ta = document.getElementById('support-reply-text');
