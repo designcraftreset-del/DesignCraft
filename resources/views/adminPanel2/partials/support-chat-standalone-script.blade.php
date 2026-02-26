@@ -161,8 +161,10 @@
         if (placeholder) placeholder.classList.add('hidden');
         formWrap.classList.remove('hidden');
         loadSupportMessages(thread.id);
+        startSupportMessagesPoll();
     }
     var supportThreadsPollTimer;
+    var supportMessagesPollTimer;
     function startSupportThreadsPoll() {
         if (supportThreadsPollTimer) return;
         supportThreadsPollTimer = setInterval(function() {
@@ -176,6 +178,16 @@
                 }
             });
         }, 20000);
+    }
+    function startSupportMessagesPoll() {
+        if (supportMessagesPollTimer) clearInterval(supportMessagesPollTimer);
+        supportMessagesPollTimer = setInterval(function() {
+            var tid = window._supportChatCurrentThreadId;
+            if (tid) loadSupportMessages(tid);
+        }, 4000);
+    }
+    function stopSupportMessagesPoll() {
+        if (supportMessagesPollTimer) { clearInterval(supportMessagesPollTimer); supportMessagesPollTimer = null; }
     }
     if (isStandalone) {
         document.getElementById('support-chat-avatar-btn') && document.getElementById('support-chat-avatar-btn').addEventListener('click', function() { window.location.href = adminMessagesUrl; });
