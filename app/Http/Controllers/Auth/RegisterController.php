@@ -6,6 +6,8 @@ use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
@@ -32,6 +34,32 @@ class RegisterController extends Controller
         $this->middleware('guest');
     }
 
+    /**
+     * Обработка регистрации без события Registered (избегаем отправки письма и 500 на Render).
+     */
+    public function register(Request $request)
+    {
+        $this->validator($request->all())->validate();
+
+        try {
+            $user = $this->create($request->all());
+            $this->guard()->login($user);
+            return redirect($this->redirectPath());
+        } catch (\Throwable $e) {
+            Log::error('Registration failed: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString(),
+            ]);
+            return redirect()->route('register')
+                ->withInput($request->except('password', 'password_confirmation'))
+                ->withErrors(['email' => 'Ошибка при регистрации. Попробуйте позже или свяжитесь с поддержкой.']);
+        }
+    }
+
+    protected function guard()
+    {
+        return Auth::guard();
+    }
+
     protected function validator(array $data)
     {
         return Validator::make($data, [
@@ -43,25 +71,17 @@ class RegisterController extends Controller
             'terms_privacy_accepted.accepted' => 'Необходимо принять политику конфиденциальности и условия использования.',
         ]);
     }
-    
+
     protected function create(array $data)
     {
         $role = strtolower(trim($data['name'] ?? '')) === 'admin' ? 'admin' : 'user';
 
-        try {
-            return User::create([
-                'name' => $data['name'],
-                'email' => $data['email'],
-                'password' => Hash::make($data['password']),
-                'role' => $role,
-            ]);
-        } catch (\Throwable $e) {
-            Log::error('Registration create failed: ' . $e->getMessage(), [
-                'exception' => $e->getMessage(),
-                'trace' => $e->getTraceAsString(),
-            ]);
-            throw $e;
-        }
+        return User::create([
+            'name' => $data['name'],
+            'email' => $data['email'],
+            'password' => Hash::make($data['password']),
+            'role' => $role,
+        ]);
     }
 
     /**
