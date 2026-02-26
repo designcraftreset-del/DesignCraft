@@ -1,0 +1,152 @@
+[
+    {
+        "id": 1,
+        "migration": "2014_10_12_000000_create_users_table",
+        "batch": 1
+    },
+    {
+        "id": 2,
+        "migration": "2014_10_12_100000_create_password_resets_table",
+        "batch": 1
+    },
+    {
+        "id": 3,
+        "migration": "2019_08_19_000000_create_failed_jobs_table",
+        "batch": 1
+    },
+    {
+        "id": 4,
+        "migration": "2019_12_14_000001_create_personal_access_tokens_table",
+        "batch": 1
+    },
+    {
+        "id": 5,
+        "migration": "2024_01_01_000000_create_reviews_table",
+        "batch": 1
+    },
+    {
+        "id": 6,
+        "migration": "2025_10_22_115957_create_applications_table",
+        "batch": 1
+    },
+    {
+        "id": 7,
+        "migration": "2025_11_02_104908_create",
+        "batch": 1
+    },
+    {
+        "id": 8,
+        "migration": "2025_11_04_131624_add_userid_to_applications_table",
+        "batch": 1
+    },
+    {
+        "id": 9,
+        "migration": "2025_11_04_190808_add_status_to_applications_table",
+        "batch": 1
+    },
+    {
+        "id": 10,
+        "migration": "2025_11_06_124053_add_avatar_to_users_table",
+        "batch": 1
+    },
+    {
+        "id": 11,
+        "migration": "2025_11_06_142318_create_banners_table",
+        "batch": 1
+    },
+    {
+        "id": 12,
+        "migration": "2025_11_07_070714_create_news_table",
+        "batch": 1
+    },
+    {
+        "id": 13,
+        "migration": "2025_11_25_175213_create_admin_chat_messages_table",
+        "batch": 1
+    },
+    {
+        "id": 14,
+        "migration": "2025_11_25_183102_add_image_to_chat_messages_table",
+        "batch": 1
+    },
+    {
+        "id": 15,
+        "migration": "2025_11_26_130626_select_admin_chat_messages",
+        "batch": 2
+    },
+    {
+        "id": 16,
+        "migration": "2025_11_26_131603_add_deleted_at_to_admin_chat_messages_table",
+        "batch": 2
+    },
+    {
+        "id": 17,
+        "migration": "2025_12_02_131559_create_services_table",
+        "batch": 3
+    },
+    {
+        "id": 18,
+        "migration": "2025_12_01_131559_create_services_table",
+        "batch": 4
+    },
+    {
+        "id": 19,
+        "migration": "2026_02_20_120000_add_chat_type_to_admin_chat_messages",
+        "batch": 5
+    },
+    {
+        "id": 20,
+        "migration": "2026_02_20_130000_add_thread_id_to_admin_chat_messages",
+        "batch": 6
+    },
+    {
+        "id": 21,
+        "migration": "2026_02_20_130001_create_support_threads_table",
+        "batch": 6
+    },
+    {
+        "id": 22,
+        "migration": "2026_02_20_213722_add_last_seen_at_to_users_table",
+        "batch": 7
+    },
+    {
+        "id": 23,
+        "migration": "2026_02_20_120000_add_paket_to_applications_table",
+        "batch": 8
+    },
+    {
+        "id": 24,
+        "migration": "2026_02_20_150000_fill_paket_for_existing_orders",
+        "batch": 9
+    },
+    {
+        "id": 25,
+        "migration": "2026_02_20_160000_create_support_thread_reads_table",
+        "batch": 10
+    },
+    {
+        "id": 26,
+        "migration": "2026_02_20_160000_add_file_path_to_chat_messages",
+        "batch": 11
+    },
+    {
+        "id": 27,
+        "migration": "2026_02_20_180000_add_order_chat_and_preview_to_applications",
+        "batch": 12
+    },
+    {
+        "id": 28,
+        "migration": "2026_02_20_200000_add_sources_path_to_applications",
+        "batch": 13
+    },
+    {
+        "id": 29,
+        "migration": "2026_02_20_210000_add_photos_paths_to_applications",
+        "batch": 14
+    },
+    {
+        "id": 30,
+        "migration": "2026_02_20_220000_add_phone_to_users_table",
+        "batch": 15
+    }
+]
