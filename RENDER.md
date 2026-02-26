@@ -107,6 +107,7 @@
 
 1. В папке проекта закоммитьте и запушьте изменения:
    ```bash
+   cd c:\ospanel\domains\DesignCraft
    git add .
    git commit -m "Описание изменений"
    git push origin main
@@ -236,7 +237,7 @@ php artisan db:import --force
 | Переменные для хоста | [Environment Web Service](https://dashboard.render.com/web/srv-d6fm2q95pdvs73djbl90/env) |
 | Локальный .env | Для OSPanel; на Render не используется |
 | База на Render | PostgreSQL; `DATABASE_URL` из карточки базы |
-| **Обновить сайт** | `git add .` → `git commit -m "..."` → `git push origin main` (при включённом Auto-Deploy сайт обновится сам) или Manual Deploy в панели Render |
+| **Обновить сайт** | `cd c:\ospanel\domains\DesignCraft` → `git add .` → `git commit -m "Описание изменений"` → `git push origin main` (при включённом Auto-Deploy сайт обновится сам) или Manual Deploy в панели Render |
 | Текущая БД → Render | С ПК: `db:export` → в .env временно `DATABASE_URL` (External) → `db:import --force`. Либо вариант B: JSON в `database/db-export`, деплой, затем `/import-db?token=IMPORT_DB_TOKEN` один раз. |
 
 - Бесплатный инстанс «засыпает» после ~15 минут без запросов; первый запрос после простоя может идти 30–60 секунд.

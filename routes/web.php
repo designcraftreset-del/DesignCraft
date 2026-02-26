@@ -20,7 +20,7 @@ use Illuminate\Support\Facades\Hash;
 
 Route::get('/home', [HomeController::class, 'index'])->name('home')->middleware('auth');
 
-// Одноразовый импорт БД из database/db-export (для Render Free). В Environment: IMPORT_DB_TOKEN=секрет. Положите JSON в database/db-export, задеплойте, откройте /import-db?token=секрет один раз, затем удалите переменную и маршрут.
+// Одноразовый импорт БД из database/db-export (для Render). В Environment: IMPORT_DB_TOKEN=секрет. Откройте /import-db?token=секрет один раз, затем удалите переменную.
 Route::get('/import-db', function (Request $request) {
     $token = env('IMPORT_DB_TOKEN');
     if (!$token || $request->query('token') !== $token) {
@@ -37,7 +37,7 @@ Route::get('/import-db', function (Request $request) {
         $body .= "\nError: " . $result['error'];
         return response($body, 500, ['Content-Type' => 'text/plain; charset=utf-8']);
     }
-    $body .= "\nИмпорт завершён. Удалите IMPORT_DB_TOKEN из Environment и этот маршрут из кода.";
+    $body .= "\nИмпорт завершён. Удалите IMPORT_DB_TOKEN из Environment.";
     return response($body, 200, ['Content-Type' => 'text/plain; charset=utf-8']);
 });
 
