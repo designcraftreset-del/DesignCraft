@@ -1,0 +1,66 @@
+[
+    {
+        "id": 1,
+        "user_id": 1,
+        "needs_human": 0,
+        "last_message_at": "2026-02-26 09:39:46",
+        "created_at": "2026-02-20 14:03:57",
+        "updated_at": "2026-02-26 11:37:24"
+    },
+    {
+        "id": 2,
+        "user_id": 14,
+        "needs_human": 0,
+        "last_message_at": "2026-02-20 15:48:34",
+        "created_at": "2026-02-20 14:15:52",
+        "updated_at": "2026-02-20 15:48:34"
+    },
+    {
+        "id": 3,
+        "user_id": 17,
+        "needs_human": 0,
+        "last_message_at": "2026-02-20 16:15:39",
+        "created_at": "2026-02-20 15:31:01",
+        "updated_at": "2026-02-20 16:15:39"
+    },
+    {
+        "id": 4,
+        "user_id": 3,
+        "needs_human": 0,
+        "last_message_at": "2026-02-20 15:48:13",
+        "created_at": "2026-02-20 15:48:13",
+        "updated_at": "2026-02-20 15:48:13"
+    },
+    {
+        "id": 5,
+        "user_id": 16,
+        "needs_human": 0,
+        "last_message_at": "2026-02-22 16:20:38",
+        "created_at": "2026-02-20 16:05:51",
+        "updated_at": "2026-02-22 16:20:38"
+    },
+    {
+        "id": 6,
+        "user_id": 7,
+        "needs_human": 0,
+        "last_message_at": "2026-02-20 16:14:23",
+        "created_at": "2026-02-20 16:14:23",
+        "updated_at": "2026-02-20 16:14:23"
+    },
+    {
+        "id": 7,
+        "user_id": 5,
+        "needs_human": 0,
+        "last_message_at": "2026-02-22 15:23:15",
+        "created_at": "2026-02-22 08:53:08",
+        "updated_at": "2026-02-22 15:24:03"
+    },
+    {
+        "id": 8,
+        "user_id": 18,
+        "needs_human": 0,
+        "last_message_at": "2026-02-23 04:06:40",
+        "created_at": "2026-02-23 03:59:50",
+        "updated_at": "2026-02-23 04:06:40"
+    }
+]
