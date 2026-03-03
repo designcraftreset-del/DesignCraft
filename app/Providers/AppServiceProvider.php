@@ -2,6 +2,10 @@
 
 namespace App\Providers;
 
+use App\Data\DefaultContent;
+use App\Models\News;
+use App\Models\Review;
+use App\Models\User;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Auth\Notifications\ResetPassword;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -50,6 +54,9 @@ class AppServiceProvider extends ServiceProvider
             ]));
         });
 
+        // Контент по умолчанию (отзывы, новости) — без сидеров, подставляется при первом запуске
+        $this->ensureDefaultContent();
+
         // Письмо сброса пароля на русском
         ResetPassword::toMailUsing(function ($notifiable, $token) {
             $url = url(route('password.reset', [
@@ -70,5 +77,58 @@ class AppServiceProvider extends ServiceProvider
                 ->line('Ссылка действительна '.$expire.' минут.')
                 ->line('Если вы не запрашивали сброс пароля, ничего делать не нужно.');
         });
+    }
+
+    /**
+     * Подставить отзывы и новости из DefaultContent в БД, если таблицы пустые (без сидеров).
+     */
+    protected function ensureDefaultContent(): void
+    {
+        try {
+            if (Review::count() === 0) {
+                $user = User::first();
+                $userId = $user?->id;
+                foreach (DefaultContent::reviews() as $item) {
+                    Review::firstOrCreate(
+                        [
+                            'client_name' => $item['client_name'],
+                            'review_text' => $item['review_text'],
+                        ],
+                        [
+                            'client_position' => $item['client_position'],
+                            'rating' => $item['rating'],
+                            'is_approved' => true,
+                            'user_id' => $userId,
+                        ]
+                    );
+                }
+            }
+
+            if (News::count() === 0) {
+                $author = User::first();
+                if ($author) {
+                    foreach (DefaultContent::news() as $i => $item) {
+                        News::firstOrCreate(
+                            ['slug' => $item['slug']],
+                            [
+                                'title' => $item['title'],
+                                'excerpt' => $item['excerpt'],
+                                'content' => $item['content'],
+                                'image_path' => $item['image_path'] ?? null,
+                                'category' => $item['category'],
+                                'is_featured' => $i === 0,
+                                'is_published' => true,
+                                'author_id' => $author->id,
+                                'views_count' => 0,
+                                'published_at' => now(),
+                            ]
+                        );
+                    }
+                }
+            }
+        } catch (\Throwable $e) {
+            // Не ломать старт приложения (миграции ещё не выполнены и т.д.)
+            report($e);
+        }
     }
 }

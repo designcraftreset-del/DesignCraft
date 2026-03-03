@@ -50,6 +50,11 @@
                     <td class="px-5 py-3 admin2-text-muted text-sm">{{ $s->created_at?->format('d.m.Y') ?? '—' }}</td>
                     <td class="px-5 py-3">
                         <button type="button" class="admin2-service-edit-btn text-xs text-primary hover:underline" data-service-id="{{ $s->id }}">Редакт.</button>
+                        <form action="{{ route('services.destroy', $s->id) }}" method="post" class="inline ml-2 admin2-service-delete-form" data-title="{{ $s->title ?? $s->titleTwo ?? 'услуга' }}">
+                            @csrf
+                            @method('DELETE')
+                            <button type="submit" class="text-xs text-red-600 dark:text-red-400 hover:underline">Удалить</button>
+                        </form>
                     </td>
                 </tr>
                 <tr class="admin2-service-edit-row hidden border-b border-slate-200 dark:border-slate-600 bg-slate-50 dark:bg-slate-800/50" data-service-id="{{ $s->id }}">
@@ -89,6 +94,14 @@ document.querySelectorAll('.admin2-service-edit-btn').forEach(function(btn) {
         var id = this.dataset.serviceId;
         var row = document.querySelector('.admin2-service-edit-row[data-service-id="' + id + '"]');
         if (row) row.classList.toggle('hidden');
+    });
+});
+document.querySelectorAll('.admin2-service-delete-form').forEach(function(form) {
+    form.addEventListener('submit', function(e) {
+        var title = form.dataset.title || 'эту услугу';
+        if (!confirm('Удалить «' + title + '»? Это действие нельзя отменить.')) {
+            e.preventDefault();
+        }
     });
 });
 </script>

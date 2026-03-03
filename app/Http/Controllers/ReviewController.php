@@ -91,7 +91,7 @@ class ReviewController extends Controller
     }
     
 
-    public function destroy(Review $review)
+    public function destroy(Request $request, Review $review)
     {
         if (!Auth::check()) {
             abort(403, 'Необходима авторизация');

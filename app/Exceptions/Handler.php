@@ -3,6 +3,8 @@
 namespace App\Exceptions;
 
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
+use Illuminate\Support\Arr;
+use Illuminate\Validation\ValidationException;
 use Throwable;
 
 class Handler extends ExceptionHandler
@@ -46,5 +48,25 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+    }
+
+    /**
+     * Редирект при ошибке валидации формы регистрации: на мобильную или десктопную форму,
+     * чтобы оба варианта сайта работали и данные падали в одну таблицу users.
+     */
+    protected function invalid($request, ValidationException $exception)
+    {
+        $redirectTo = $exception->redirectTo ?? null;
+        if ($redirectTo === null && $request->isMethod('POST') && $request->is('register')) {
+            $redirectTo = $request->has('redirect_mobile')
+                ? route('mobile.register')
+                : route('auth-v2.register');
+        }
+        if ($redirectTo === null) {
+            $redirectTo = url()->previous();
+        }
+        return redirect($redirectTo)
+            ->withInput(Arr::except($request->input(), $this->dontFlash))
+            ->withErrors($exception->errors(), $request->input('_error_bag', $exception->errorBag));
     }
 }

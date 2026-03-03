@@ -65,4 +65,16 @@ class ServicesController extends Controller
         $service->save();
         return redirect()->back()->with('success', 'Услуга обновлена');
     }
+
+    /** Удаление услуги (админ/модератор) */
+    public function destroy($id)
+    {
+        $user = Auth::user();
+        if (($user->role ?? null) !== 'admin' && ($user->role ?? null) !== 'moderator') {
+            return redirect()->back()->with('error', 'Нет доступа');
+        }
+        $service = Services::findOrFail($id);
+        $service->delete();
+        return redirect()->route('adminPanel2', ['page' => 'products'])->with('success', 'Услуга удалена');
+    }
 }

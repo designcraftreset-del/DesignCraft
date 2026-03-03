@@ -102,6 +102,7 @@
     position: relative;
     overflow: hidden;
     height: 250px;
+    background: #1e293b;
 }
 
 .news-card.featured .news-image {
@@ -110,9 +111,10 @@
 }
 
 .news-image img {
-    width: 334px;
+    width: 100%;
     height: 100%;
     object-fit: cover;
+    display: block;
     transition: transform 0.5s ease;
 }
 
@@ -124,6 +126,8 @@
     position: absolute;
     top: 1rem;
     left: 1rem;
+    right: auto;
+    z-index: 2;
     background: linear-gradient(135deg, #3B82F6, #1D4ED8);
     color: white;
     padding: 0.5rem 1rem;
@@ -132,14 +136,17 @@
     font-weight: 600;
     text-transform: uppercase;
     letter-spacing: 0.5px;
+    max-width: calc(100% - 2rem);
 }
 
 .news-date {
     position: absolute;
     top: 1rem;
     right: 1rem;
-    background: rgba(255, 255, 255, 0.95);
-    color: #374151;
+    left: auto;
+    z-index: 2;
+    background: rgba(0, 0, 0, 0.6);
+    color: #fff;
     padding: 0.5rem 1rem;
     border-radius: 8px;
     font-size: 0.875rem;

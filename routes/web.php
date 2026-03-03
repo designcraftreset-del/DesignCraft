@@ -85,6 +85,7 @@ Route::get("/services",  [ApplicationController::class, 'servicesFunc'])->name('
 Route::get("/servicesBlock/create",  [ApplicationController::class, 'servicesCreateFunc'])->name('services.create')->middleware('auth', 'admin');
 Route::post("/servicesBlockPost",  [ServicesController::class, 'servicesBlockPostFunc'])->name('servicesBlockPost')->middleware('auth');
 Route::put('/services/{id}', [ServicesController::class, 'update'])->name('services.update')->middleware('auth');
+Route::delete('/services/{id}', [ServicesController::class, 'destroy'])->name('services.destroy')->middleware('auth');
 Route::get("/portfolio", [BannerControllerTwo::class, 'index'])->name('portfolio');
 Route::get("/whyus",  [ApplicationController::class, 'whyusFunc'])->name('whyus');
 Route::get("/contacts",  [ApplicationController::class, 'contactsFunc'])->name('contacts');

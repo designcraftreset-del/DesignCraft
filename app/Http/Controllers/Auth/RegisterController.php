@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Database\QueryException;
 
 class RegisterController extends Controller
 {
@@ -45,11 +46,24 @@ class RegisterController extends Controller
             $user = $this->create($request->all());
             $this->guard()->login($user);
             return redirect($this->redirectPath());
+        } catch (QueryException $e) {
+            $isDuplicate = $e->getCode() === '23000' || $e->getCode() === 23000
+                || str_contains($e->getMessage(), 'Duplicate entry')
+                || str_contains($e->getMessage(), 'unique') || str_contains($e->getMessage(), '23505');
+            Log::warning('Registration DB error: ' . $e->getMessage());
+            $to = $request->has('redirect_mobile') ? route('mobile.register') : route('auth-v2.register');
+            $message = $isDuplicate
+                ? 'Этот email уже зарегистрирован. Войдите или восстановите пароль.'
+                : 'Ошибка при регистрации. Попробуйте позже или свяжитесь с поддержкой.';
+            return redirect($to)
+                ->withInput($request->except('password', 'password_confirmation'))
+                ->withErrors(['email' => $message]);
         } catch (\Throwable $e) {
             Log::error('Registration failed: ' . $e->getMessage(), [
                 'trace' => $e->getTraceAsString(),
             ]);
-            return redirect()->route('register')
+            $to = $request->has('redirect_mobile') ? route('mobile.register') : route('auth-v2.register');
+            return redirect($to)
                 ->withInput($request->except('password', 'password_confirmation'))
                 ->withErrors(['email' => 'Ошибка при регистрации. Попробуйте позже или свяжитесь с поддержкой.']);
         }
