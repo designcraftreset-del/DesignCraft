@@ -11,6 +11,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\News;
 use App\Http\Controllers\NewsController;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class ApplicationController extends Controller
 {
@@ -432,10 +433,32 @@ class ApplicationController extends Controller
         if (\App\Http\Middleware\DetectMobile::isMobile($request) && !\App\Http\Middleware\DetectMobile::wantsDesktop($request)) {
             return redirect()->route('mobile.home');
         }
-        $PublicFunc = Application::where('userid', Auth::id())->get();
-        $reviews = Review::approved()->orderBy('created_at', 'desc')->get();
-        $news = news::all();
-        return view("hellow", ['hideHeader' => true], compact("PublicFunc", "reviews","news"));
+        try {
+            $PublicFunc = Application::where('userid', Auth::id())->get();
+        } catch (QueryException $e) {
+            \Log::warning('Application table unavailable in hellowFunc: ' . $e->getMessage());
+            $PublicFunc = collect();
+        }
+        try {
+            $reviews = Review::approved()->orderBy('created_at', 'desc')->get();
+        } catch (QueryException $e) {
+            \Log::warning('Review table unavailable in hellowFunc: ' . $e->getMessage());
+            $reviews = collect();
+        }
+        try {
+            $news = News::published()->with('user')->orderBy('published_at', 'desc')->take(6)->get();
+            $newsForHome = News::published()->with('user')->whereNotNull('image_path')->where('image_path', '!=', '')->orderBy('published_at', 'desc')->take(3)->get();
+            if ($newsForHome->count() < 3) {
+                $ids = $newsForHome->pluck('id')->toArray();
+                $extra = News::published()->with('user')->when(count($ids) > 0, fn ($q) => $q->whereNotIn('id', $ids))->orderBy('published_at', 'desc')->take(3 - $newsForHome->count())->get();
+                $newsForHome = $newsForHome->merge($extra);
+            }
+        } catch (QueryException $e) {
+            \Log::warning('News table unavailable in hellowFunc: ' . $e->getMessage());
+            $news = collect();
+            $newsForHome = collect();
+        }
+        return view("hellow", ['hideHeader' => true], compact("PublicFunc", "reviews", "news", "newsForHome"));
     }
 
     public function websiteNewsFunc(){

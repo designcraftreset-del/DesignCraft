@@ -1257,13 +1257,7 @@
             @foreach($relatedNews as $related)
                 <article class="related-news-card">
                     <div class="related-news-image">
-                        @if($related->image_path && Storage::disk('public')->exists($related->image_path))
-                            <img src="{{ upload_asset($related->image_path, 'image/placeholder.svg') }}" alt="{{ $related->title }}">
-                        @else
-                            <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #3B82F6, #1D4ED8); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
-                                <span></span>
-                            </div>
-                        @endif
+                        <img src="{{ upload_asset($related->image_path, 'image/placeholder.svg') }}" alt="{{ $related->title }}" loading="lazy">
                         <div class="related-news-category">{{ $related->category }}</div>
                         <div class="related-news-date">{{ $related->published_at->format('d M Y') }}</div>
                     </div>

@@ -31,7 +31,6 @@
 @section('content')
 <div class="m-auth">
     <h1 class="m-auth__title">Регистрация</h1>
-    <p class="m-auth__subtitle">Создайте аккаунт, чтобы заказывать дизайн</p>
 
     @if ($errors->any())
         <div class="m-auth__alert m-auth__alert--error">

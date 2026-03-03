@@ -16,16 +16,17 @@ class NewsController extends Controller
         $search = $request->get('search', '');
         
         $newsQuery = News::published()
+                    ->with('user')
                     ->byCategory($category)
                     ->search($search)
-                    ->orderBy('is_featured', 'desc') // Сначала featured
+                    ->orderBy('is_featured', 'desc')
                     ->orderBy('published_at', 'desc')
                     ->orderBy('created_at', 'desc');
         
         $news = $newsQuery->paginate(50);
         
-        // Остальной код остается без изменений...
         $featuredNews = News::published()
+                        ->with('user')
                         ->featured()
                         ->orderBy('published_at', 'desc')
                         ->take(1)
@@ -41,24 +42,44 @@ class NewsController extends Controller
         $search = $request->get('search', '');
         
         $newsQuery = News::published()
+                    ->with('user')
                     ->byCategory($category)
                     ->search($search)
-                    ->orderBy('is_featured', 'desc') // Сначала featured
+                    ->orderBy('is_featured', 'desc')
                     ->orderBy('published_at', 'desc')
                     ->orderBy('created_at', 'desc');
         
         $news = $newsQuery->paginate(50);
         
-        // Остальной код остается без изменений...
         $featuredNews = News::published()
+                        ->with('user')
                         ->featured()
                         ->orderBy('published_at', 'desc')
                         ->take(1)
                         ->get();
         
+        // Для блока новостей на главной: сначала новости с фото, затем остальные (текст и фото из БД)
+        $newsForHome = News::published()
+            ->with('user')
+            ->whereNotNull('image_path')
+            ->where('image_path', '!=', '')
+            ->orderBy('published_at', 'desc')
+            ->take(3)
+            ->get();
+        if ($newsForHome->count() < 3) {
+            $ids = $newsForHome->pluck('id')->toArray();
+            $extra = News::published()
+                ->with('user')
+                ->when(count($ids) > 0, fn ($q) => $q->whereNotIn('id', $ids))
+                ->orderBy('published_at', 'desc')
+                ->take(3 - $newsForHome->count())
+                ->get();
+            $newsForHome = $newsForHome->merge($extra);
+        }
+        
         $PublicFunc = Application::where('userid', Auth::id())->get();
         
-        return view("hellow", compact("news", "featuredNews", "category", "search", "PublicFunc"));
+        return view("hellow", compact("news", "featuredNews", "newsForHome", "category", "search", "PublicFunc"));
     }
 
     public function show($slug)
@@ -125,6 +146,7 @@ class NewsController extends Controller
             'published_at' => 'nullable|date'
         ]);
 
+        // Фото сохраняются в public/uploads/news/ (диск public_uploads) — так они не пропадают на Render и отображаются через upload_asset()
         $imagePath = null;
         if ($request->hasFile('image')) {
             $imagePath = $request->file('image')->store('news', 'public_uploads');

@@ -4,7 +4,6 @@
 
 @section('content')
     <h1>Регистрация</h1>
-    <p class="auth-v2-subtitle">Создайте аккаунт, чтобы заказывать дизайн</p>
 
     @if ($errors->any())
         <div class="auth-v2-alert auth-v2-alert-error">

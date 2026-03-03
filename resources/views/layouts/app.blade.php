@@ -19,9 +19,25 @@
     </script>
     <style>
         .burger-menu { display: none; }
-        /* Убираем дублирование: у авторизованных в шапке только дропдаун, без текста "Главная Аккаунт Выйти" */
+        /* Убираем дублирование: у авторизованных в шапке только дропдаун; у гостей — одна пара Войти/Регистрация в навбаре */
         @media (min-width: 1001px) {
             .dc-nav--logged-in .dc-nav__user-links { display: none !important; }
+            .dc-nav:not(.dc-nav--logged-in) .dc-nav__user-links {
+                display: flex !important;
+                flex-direction: row;
+                align-items: center;
+                gap: 0.5rem 1rem;
+                border: none;
+                padding: 0;
+                margin: 0;
+                margin-left: auto;
+            }
+            .dc-nav:not(.dc-nav--logged-in) .dc-nav__user-links .dc-nav__link--user {
+                padding: 0.4rem 0 !important;
+                border-bottom: none !important;
+            }
+            /* У гостей пустой справа блок не занимает место */
+            #navbarSupportedContent .navbar-nav:empty { display: none !important; }
         }
         .dc-nav__link--register { background: var(--primary, #1D4ED8) !important; color: #fff !important; padding: 0.4rem 0.9rem !important; border-radius: 0.375rem; }
         .mobile-nav-sheet__link--register { background: var(--primary, #1D4ED8); color: #fff !important; border-radius: 0.5rem; padding: 0.5rem 1rem; text-align: center; }
@@ -811,18 +827,7 @@
                     <div class="dc-header__user navbarSupportedContent" id="navbarSupportedContent">
                         <ul class="navbar-nav me-auto"></ul>
                         <ul class="navbar-nav ms-auto" style="display: flex !important; flex-direction: row; gap: 20px;">
-                            @guest
-                                @if (Route::has('login'))
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('login') }}">{{ __('Войти') }}</a>
-                                    </li>
-                                @endif
-                                @if (Route::has('register'))
-                                    <li class="nav-item">
-                                        <a class="nav-link nav-link--register" href="{{ route('register') }}" style="background:var(--primary,#1D4ED8);color:#fff!important;padding:0.4rem 0.9rem;border-radius:0.375rem;">{{ __('Регистрация') }}</a>
-                                    </li>
-                                @endif
-                            @else
+                            @auth
                                 <li class="nav-item dropdown">
                                     <a id="navbarDropdown" class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false" v-pre>
                                         <span class="dc-header__user-name-text">{{ Auth::user()->name }}</span>
@@ -918,7 +923,7 @@
                                         </form>
                                     </div>
                                 </li>
-                            @endguest
+                            @endauth
                         </ul>
                     </div>
                 </div>
@@ -1135,6 +1140,10 @@
         body.dark-theme .support-chat-text::placeholder { color: #94a3b8; }
         body.dark-theme .support-chat-file-label { background: #334155; border-color: #475569; color: #94a3b8; }
         body.dark-theme .container { color: #e2e8f0; }
+        /* Звёзды рейтинга в отзывах: на тёмной теме пустые и заполненные должны быть видны */
+        body.dark-theme .review-card__rating { color: #64748b !important; }
+        body.dark-theme .review-card__rating .review-card__star { color: inherit !important; }
+        body.dark-theme .review-card__rating .review-card__star.is-filled { color: #fbbf24 !important; }
         /* Синий фон — всегда белый текст (контраст) */
         .btn-modern[style*="1e40af"], .btn-modern[style*="1D4ED8"], button[style*="background: #1e40af"], button[style*="background:#1e40af"], button[style*="background: #1D4ED8"], .moder-order-form-submit { color: #fff !important; }
     </style>

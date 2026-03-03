@@ -48,6 +48,22 @@ class Handler extends ExceptionHandler
         $this->reportable(function (Throwable $e) {
             //
         });
+
+        // В production показывать страницу 500 в стиле сайта для любых необработанных ошибок
+        $this->renderable(function (Throwable $e, $request) {
+            if (!config('app.debug') && $request->expectsJson() === false) {
+                $code = $this->isHttpException($e) ? $e->getStatusCode() : 500;
+                if ($code >= 500 && view()->exists('errors.' . $code)) {
+                    return response()->view('errors.' . $code, [], $code);
+                }
+                if ($code >= 400 && $code < 500 && view()->exists('errors.' . $code)) {
+                    return response()->view('errors.' . $code, [], $code);
+                }
+                if ($code >= 500) {
+                    return response()->view('errors.500', [], 500);
+                }
+            }
+        });
     }
 
     /**

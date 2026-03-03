@@ -784,6 +784,16 @@
     background-color: #13171f;
 }
 
+/* Звёзды рейтинга: на тёмной теме пустые серые, заполненные — золотые */
+body.dark-theme .review-card__rating,
+.dark-theme .review-card__rating { color: #64748b !important; }
+body.dark-theme .review-card__rating .review-card__star,
+.dark-theme .review-card__rating .review-card__star { color: inherit !important; }
+body.dark-theme .review-card__rating .review-card__star.is-filled,
+.dark-theme .review-card__rating .review-card__star.is-filled { color: #fbbf24 !important; }
+body.dark-theme .inner_reviews .review-card__rating .review-card__star { color: #64748b !important; }
+body.dark-theme .inner_reviews .review-card__rating .review-card__star.is-filled { color: #fbbf24 !important; }
+
 .dark-theme .login-card {
     background: rgba(25, 29, 40, 0.95) !important;
     border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -1523,7 +1533,6 @@
                         @guest
                         <a href="{{ route('register') }}" class="hero_login_buttons_h1"><p>Зарегистрироваться</p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
                         <a href="{{ route('login') }}" class="hero_login_buttons_h2">Войти</a>
-                        <p class="hero_login_buttons_hint" style="margin-top:0.75rem;font-size:0.9rem;opacity:0.9;">Создайте аккаунт, чтобы заказать дизайн</p>
                         @else
                         <a href="{{ url('/order') }}" class="hero_login_buttons_h1"><p>Заказать дизайн</p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
                         <a href="#whyus" class="hero_login_buttons_h2">Почему мы <p>?</p></a>
@@ -1547,33 +1556,254 @@
         </div>
     </section>
     @guest
-    <section class="dc-section dc-section--content" id="how-to-start" style="padding-top:1.5rem; padding-bottom:2rem;">
+    <section class="dc-section how-to-start-section" id="how-to-start" aria-label="Как заказать дизайн">
         <div class="dc-container container">
-            <div style="text-align:center; margin-bottom:1.5rem;">
-                <h2 style="font-size:1.5rem; margin-bottom:0.5rem;">С чего начать?</h2>
-                <p style="opacity:0.9; font-size:1rem;">Закажите дизайн за три шага</p>
+            <div class="how-to-start-header">
+                <span class="how-to-start-badge">С чего начать</span>
+                <h2 class="how-to-start-title">Закажите дизайн за три шага</h2>
+                <p class="how-to-start-subtitle">Регистрация, выбор услуги и заказ — без лишней бюрократии</p>
             </div>
-            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1.5rem; max-width:800px; margin:0 auto 1.5rem;">
-                <div style="text-align:center; padding:1rem;">
-                    <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; background:var(--primary, #1D4ED8); color:white; border-radius:50%; font-weight:bold; font-size:1.25rem;">1</span>
-                    <p style="margin-top:0.75rem; font-weight:600;">Зарегистрируйтесь</p>
-                    <p style="font-size:0.9rem; opacity:0.85;">Создайте аккаунт за минуту</p>
+            <div class="how-to-start-steps">
+                <div class="how-to-start-step">
+                    <div class="how-to-start-step-icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <span class="how-to-start-step-num">1</span>
+                    <h3 class="how-to-start-step-title">Зарегистрируйтесь</h3>
+                    <p class="how-to-start-step-desc">Быстрый вход по email — без длинных форм</p>
                 </div>
-                <div style="text-align:center; padding:1rem;">
-                    <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; background:var(--primary, #1D4ED8); color:white; border-radius:50%; font-weight:bold; font-size:1.25rem;">2</span>
-                    <p style="margin-top:0.75rem; font-weight:600;">Выберите услугу</p>
-                    <p style="font-size:0.9rem; opacity:0.85;">Превью, аватарка, баннер и др.</p>
+                <div class="how-to-start-step-arrow" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
                 </div>
-                <div style="text-align:center; padding:1rem;">
-                    <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; background:var(--primary, #1D4ED8); color:white; border-radius:50%; font-weight:bold; font-size:1.25rem;">3</span>
-                    <p style="margin-top:0.75rem; font-weight:600;">Оформите заказ</p>
-                    <p style="font-size:0.9rem; opacity:0.85;">Опишите задачу — мы свяжемся с вами</p>
+                <div class="how-to-start-step">
+                    <div class="how-to-start-step-icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg>
+                    </div>
+                    <span class="how-to-start-step-num">2</span>
+                    <h3 class="how-to-start-step-title">Выберите услугу</h3>
+                    <p class="how-to-start-step-desc">Превью, аватарка, баннер, логотип — то, что нужно вам</p>
+                </div>
+                <div class="how-to-start-step-arrow" aria-hidden="true">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </div>
+                <div class="how-to-start-step">
+                    <div class="how-to-start-step-icon" aria-hidden="true">
+                        <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+                    </div>
+                    <span class="how-to-start-step-num">3</span>
+                    <h3 class="how-to-start-step-title">Оформите заказ</h3>
+                    <p class="how-to-start-step-desc">Опишите задачу — мы свяжемся и обсудим детали</p>
                 </div>
             </div>
-            <div style="text-align:center;">
-                <a href="{{ route('register') }}" style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.75rem 1.5rem; background:var(--primary, #1D4ED8); color:white; border-radius:0.5rem; text-decoration:none; font-weight:600;">Создать аккаунт</a>
+            <div class="how-to-start-cta">
+                <a href="{{ route('register') }}" class="how-to-start-btn">
+                    <span>Создать аккаунт</span>
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
             </div>
         </div>
+        <style>
+            .how-to-start-section {
+                padding: 4rem 0;
+                background: linear-gradient(160deg, #f0f4ff 0%, #e8eeff 50%, #f8fafc 100%);
+                position: relative;
+                overflow: hidden;
+                text-align: center;
+                width: 100%;
+                box-sizing: border-box;
+            }
+            .how-to-start-section .dc-container,
+            .how-to-start-section .container {
+                margin-left: auto !important;
+                margin-right: auto !important;
+                width: 100%;
+                max-width: 80rem;
+                padding-left: 20px;
+                padding-right: 20px;
+                text-align: center !important;
+            }
+            #how-to-start .how-to-start-header {
+                display: flex !important;
+                flex-direction: column !important;
+                align-items: center !important;
+                text-align: center !important;
+            }
+            #how-to-start .how-to-start-badge,
+            #how-to-start .how-to-start-title,
+            #how-to-start .how-to-start-subtitle {
+                text-align: center !important;
+            }
+            .how-to-start-section::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -20%;
+                width: 60%;
+                height: 120%;
+                background: radial-gradient(ellipse, rgba(29, 78, 216, 0.06) 0%, transparent 70%);
+                pointer-events: none;
+            }
+            .dark-theme .how-to-start-section {
+                background: linear-gradient(160deg, #0f172a 0%, #1e293b 50%, #0f172a 100%);
+            }
+            .dark-theme .how-to-start-section::before {
+                background: radial-gradient(ellipse, rgba(59, 130, 246, 0.08) 0%, transparent 70%);
+            }
+            .how-to-start-header { text-align: center !important; margin-bottom: 3rem; position: relative; z-index: 1; width: 100%; }
+            .how-to-start-badge {
+                display: inline-block;
+                font-size: 0.7rem;
+                font-weight: 700;
+                text-transform: uppercase;
+                letter-spacing: 0.12em;
+                color: #1D4ED8;
+                margin-bottom: 0.75rem;
+                padding: 0.35rem 0.85rem;
+                background: rgba(29, 78, 216, 0.1);
+                border-radius: 100px;
+            }
+            .dark-theme .how-to-start-badge { color: #93c5fd; background: rgba(59, 130, 246, 0.15); }
+            .how-to-start-title {
+                display: flex !important;
+                flex-direction: column;
+                align-items: center;
+                font-size: clamp(1.75rem, 4vw, 2.25rem);
+                font-weight: 800;
+                color: #0f172a;
+                margin: 0 0 0.5rem;
+                letter-spacing: -0.03em;
+                line-height: 1.2;
+            }
+            .dark-theme .how-to-start-title { color: #f1f5f9; }
+            .how-to-start-subtitle {
+                font-size: 1.05rem;
+                color: #64748b;
+                margin: 0 auto;
+                max-width: 420px;
+                text-align: center !important;
+            }
+            .dark-theme .how-to-start-subtitle { color: #94a3b8; }
+            .how-to-start-steps {
+                display: flex;
+                flex-wrap: wrap;
+                align-items: stretch;
+                justify-content: center;
+                gap: 1rem 0.75rem;
+                max-width: 920px;
+                width: 100%;
+                margin-left: auto;
+                margin-right: auto;
+                margin-bottom: 2.5rem;
+                position: relative;
+                z-index: 1;
+            }
+            .how-to-start-step {
+                flex: 1 1 180px;
+                max-width: 280px;
+                padding: 1.75rem 1.5rem;
+                background: #fff;
+                border-radius: 20px;
+                box-shadow: 0 2px 12px rgba(0,0,0,0.06), 0 0 0 1px rgba(0,0,0,0.04);
+                border: none;
+                transition: transform 0.25s ease, box-shadow 0.25s ease;
+                position: relative;
+                overflow: hidden;
+            }
+            .how-to-start-step::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 3px;
+                background: linear-gradient(90deg, #1D4ED8, #3b82f6);
+                opacity: 0;
+                transition: opacity 0.25s ease;
+            }
+            .how-to-start-step:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 32px rgba(29, 78, 216, 0.15), 0 0 0 1px rgba(29, 78, 216, 0.1);
+            }
+            .how-to-start-step:hover::before { opacity: 1; }
+            .dark-theme .how-to-start-step {
+                background: #1e293b;
+                box-shadow: 0 2px 12px rgba(0,0,0,0.2), 0 0 0 1px rgba(255,255,255,0.06);
+            }
+            .dark-theme .how-to-start-step:hover {
+                box-shadow: 0 12px 32px rgba(0,0,0,0.35), 0 0 0 1px rgba(59, 130, 246, 0.2);
+            }
+            .how-to-start-step-icon {
+                width: 48px;
+                height: 48px;
+                border-radius: 14px;
+                background: linear-gradient(135deg, #eef2ff 0%, #e0e7ff 100%);
+                color: #1D4ED8;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                margin-bottom: 1rem;
+            }
+            .dark-theme .how-to-start-step-icon {
+                background: rgba(59, 130, 246, 0.2);
+                color: #93c5fd;
+            }
+            .how-to-start-step-num {
+                position: absolute;
+                top: 1rem;
+                right: 1rem;
+                font-size: 2rem;
+                font-weight: 800;
+                line-height: 1;
+                color: #e2e8f0;
+            }
+            .dark-theme .how-to-start-step-num { color: #334155; }
+            .how-to-start-step-title {
+                font-size: 1.15rem;
+                font-weight: 700;
+                color: #0f172a;
+                margin: 0 0 0.4rem;
+            }
+            .dark-theme .how-to-start-step-title { color: #f1f5f9; }
+            .how-to-start-step-desc {
+                font-size: 0.9rem;
+                color: #64748b;
+                margin: 0;
+                line-height: 1.5;
+            }
+            .dark-theme .how-to-start-step-desc { color: #94a3b8; }
+            .how-to-start-step-arrow {
+                display: flex;
+                align-items: center;
+                color: #cbd5e1;
+            }
+            .dark-theme .how-to-start-step-arrow { color: #475569; }
+            @media (max-width: 768px) {
+                .how-to-start-step-arrow { display: none; }
+                .how-to-start-steps { gap: 1.25rem; }
+                .how-to-start-step { max-width: none; }
+            }
+            .how-to-start-cta { text-align: center; position: relative; z-index: 1; }
+            .how-to-start-btn {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.6rem;
+                padding: 1rem 2rem;
+                background: linear-gradient(135deg, #1D4ED8 0%, #1e40af 100%);
+                color: #fff;
+                font-weight: 600;
+                font-size: 1.05rem;
+                border-radius: 14px;
+                text-decoration: none;
+                box-shadow: 0 4px 20px rgba(29, 78, 216, 0.4);
+                transition: transform 0.2s ease, box-shadow 0.2s ease;
+            }
+            .how-to-start-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 28px rgba(29, 78, 216, 0.5);
+                color: #fff;
+            }
+            .how-to-start-btn svg { flex-shrink: 0; }
+        </style>
     </section>
     @endguest
     <section class="hero_mobile" id="hero-mobile" aria-label="Главный экран">
@@ -1880,7 +2110,7 @@
                     }
 
                     .news-image img {
-                        width: 334px;
+                        width: 100%;
                         height: 100%;
                         object-fit: cover;
                         transition: transform 0.5s ease;
@@ -2449,10 +2679,7 @@
                         border-radius: 50%;
                     }
                     </style>
-                    @php
-                        $regularItems = $news->where('is_featured', false)->take(3);
-                    @endphp
-                @foreach($regularItems as $item)
+                @foreach(($newsForHome ?? collect()) as $item)
                     <article class="news-card">
                         <div class="news-image">
                             <img src="{{ upload_asset($item->image_path, 'image/placeholder.svg') }}" alt="{{ $item->title }}">
