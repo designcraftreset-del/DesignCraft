@@ -1520,8 +1520,14 @@
                     <h1 class="hero_login_text_h2_hero_login_text_h2">Мастерство дизайна в <span>Photoshop</span> & <span>Figma</span></h1>
                     <h2 class="hero_login_text_h2_hero_login_text">Воплощаем ваши идеи в жизнь с помощью современных инструментов дизайна. Создаем уникальные визуальные решения, которые выделяют ваш бренд.</h2>
                     <div class="hero_login_buttons">
-                        <a href="{{ url('/login') }}" class="hero_login_buttons_h1"><p>Начать проект</p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
-                        <a href="#whyus" class="hero_login_buttons_h2">Почему мы <p>?</p></a>                                  
+                        @guest
+                        <a href="{{ route('register') }}" class="hero_login_buttons_h1"><p>Зарегистрироваться</p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+                        <a href="{{ route('login') }}" class="hero_login_buttons_h2">Войти</a>
+                        <p class="hero_login_buttons_hint" style="margin-top:0.75rem;font-size:0.9rem;opacity:0.9;">Создайте аккаунт, чтобы заказать дизайн</p>
+                        @else
+                        <a href="{{ url('/order') }}" class="hero_login_buttons_h1"><p>Заказать дизайн</p><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></a>
+                        <a href="#whyus" class="hero_login_buttons_h2">Почему мы <p>?</p></a>
+                        @endguest
                     </div>                                       
                 </div>   
                 <div class="hero_login_block">
@@ -1540,6 +1546,36 @@
             </div>
         </div>
     </section>
+    @guest
+    <section class="dc-section dc-section--content" id="how-to-start" style="padding-top:1.5rem; padding-bottom:2rem;">
+        <div class="dc-container container">
+            <div style="text-align:center; margin-bottom:1.5rem;">
+                <h2 style="font-size:1.5rem; margin-bottom:0.5rem;">С чего начать?</h2>
+                <p style="opacity:0.9; font-size:1rem;">Закажите дизайн за три шага</p>
+            </div>
+            <div style="display:grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap:1.5rem; max-width:800px; margin:0 auto 1.5rem;">
+                <div style="text-align:center; padding:1rem;">
+                    <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; background:var(--primary, #1D4ED8); color:white; border-radius:50%; font-weight:bold; font-size:1.25rem;">1</span>
+                    <p style="margin-top:0.75rem; font-weight:600;">Зарегистрируйтесь</p>
+                    <p style="font-size:0.9rem; opacity:0.85;">Создайте аккаунт за минуту</p>
+                </div>
+                <div style="text-align:center; padding:1rem;">
+                    <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; background:var(--primary, #1D4ED8); color:white; border-radius:50%; font-weight:bold; font-size:1.25rem;">2</span>
+                    <p style="margin-top:0.75rem; font-weight:600;">Выберите услугу</p>
+                    <p style="font-size:0.9rem; opacity:0.85;">Превью, аватарка, баннер и др.</p>
+                </div>
+                <div style="text-align:center; padding:1rem;">
+                    <span style="display:inline-flex; align-items:center; justify-content:center; width:48px; height:48px; background:var(--primary, #1D4ED8); color:white; border-radius:50%; font-weight:bold; font-size:1.25rem;">3</span>
+                    <p style="margin-top:0.75rem; font-weight:600;">Оформите заказ</p>
+                    <p style="font-size:0.9rem; opacity:0.85;">Опишите задачу — мы свяжемся с вами</p>
+                </div>
+            </div>
+            <div style="text-align:center;">
+                <a href="{{ route('register') }}" style="display:inline-flex; align-items:center; gap:0.5rem; padding:0.75rem 1.5rem; background:var(--primary, #1D4ED8); color:white; border-radius:0.5rem; text-decoration:none; font-weight:600;">Создать аккаунт</a>
+            </div>
+        </div>
+    </section>
+    @endguest
     <section class="hero_mobile" id="hero-mobile" aria-label="Главный экран">
         <div class="hero_mobile__bg"></div>
     </section>

@@ -23,6 +23,8 @@
         @media (min-width: 1001px) {
             .dc-nav--logged-in .dc-nav__user-links { display: none !important; }
         }
+        .dc-nav__link--register { background: var(--primary, #1D4ED8) !important; color: #fff !important; padding: 0.4rem 0.9rem !important; border-radius: 0.375rem; }
+        .mobile-nav-sheet__link--register { background: var(--primary, #1D4ED8); color: #fff !important; border-radius: 0.5rem; padding: 0.5rem 1rem; text-align: center; }
         .banner-tags span{
             color: black !important;
         }
@@ -760,30 +762,28 @@
                                     <a class="mobile-nav-sheet__link" href="#" data-action="support-chat">Чат поддержки</a>
                                     <a class="mobile-nav-sheet__link mobile-nav-sheet__link--logout" href="{{ route('logout') }}" onclick="event.preventDefault(); document.getElementById('logout-form').submit();">Выйти</a>
                                 @else
-                                    <a class="mobile-nav-sheet__link" href="{{ route('login') }}">Логин</a>
+                                    <a class="mobile-nav-sheet__link" href="{{ route('login') }}">Войти</a>
                                     @if (Route::has('register'))
-                                    <a class="mobile-nav-sheet__link" href="{{ route('register') }}">Регистрация</a>
+                                    <a class="mobile-nav-sheet__link mobile-nav-sheet__link--register" href="{{ route('register') }}">Регистрация</a>
                                     @endif
                                 @endauth
                             @endif
                         </div>
                     </div>
                     <div class="dc-nav nav {{ Auth::check() ? 'dc-nav--logged-in' : '' }}" id="dcNav" role="navigation">
-                        @auth
-                        <a class="dc-nav__link nav_text" href="{{ Auth::check() ? url('/aboutus') : route('login') }}">О нас</a>
-                        <a class="dc-nav__link nav_text" href="{{ Auth::check() ? url('/services') : route('login') }}">Услуги</a>
-                        <a class="dc-nav__link nav_text" href="{{ Auth::check() ? url('/portfolio') : route('login') }}">Портфолио</a>
-                        <a class="dc-nav__link nav_text" href="{{ Auth::check() ? url('/websiteNews') : route('login') }}">Новости</a>
-                        <a class="dc-nav__link nav_text" href="{{ Auth::check() ? url('/whyus') : route('login') }}">Почему мы?</a>
-                        <a class="dc-nav__link nav_text" href="{{ Auth::check() ? url('/contacts') : route('login') }}">Контакты</a>
-                        @endauth
+                        <a class="dc-nav__link nav_text" href="{{ url('/aboutus') }}">О нас</a>
+                        <a class="dc-nav__link nav_text" href="{{ url('/services') }}">Услуги</a>
+                        <a class="dc-nav__link nav_text" href="{{ url('/portfolio') }}">Портфолио</a>
+                        <a class="dc-nav__link nav_text" href="{{ url('/websiteNews') }}">Новости</a>
+                        <a class="dc-nav__link nav_text" href="{{ url('/whyus') }}">Почему мы?</a>
+                        <a class="dc-nav__link nav_text" href="{{ url('/contacts') }}">Контакты</a>
                         <div class="dc-nav__user-links" aria-hidden="true">
                             @guest
                                 @if (Route::has('login'))
-                                    <a class="dc-nav__link dc-nav__link--user" href="{{ route('login') }}">{{ __('Логин') }}</a>
+                                    <a class="dc-nav__link dc-nav__link--user" href="{{ route('login') }}">{{ __('Войти') }}</a>
                                 @endif
                                 @if (Route::has('register'))
-                                    <a class="dc-nav__link dc-nav__link--user" href="{{ route('register') }}">{{ __('Регистрация') }}</a>
+                                    <a class="dc-nav__link dc-nav__link--user dc-nav__link--register" href="{{ route('register') }}">{{ __('Регистрация') }}</a>
                                 @endif
                             @else
                                 <span class="dc-nav__user-name">{{ Auth::user()->name }}</span>
@@ -814,12 +814,12 @@
                             @guest
                                 @if (Route::has('login'))
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('login') }}">{{ __('Логин') }}</a>
+                                        <a class="nav-link" href="{{ route('login') }}">{{ __('Войти') }}</a>
                                     </li>
                                 @endif
                                 @if (Route::has('register'))
                                     <li class="nav-item">
-                                        <a class="nav-link" href="{{ route('register') }}">{{ __('Регистрация') }}</a>
+                                        <a class="nav-link nav-link--register" href="{{ route('register') }}" style="background:var(--primary,#1D4ED8);color:#fff!important;padding:0.4rem 0.9rem;border-radius:0.375rem;">{{ __('Регистрация') }}</a>
                                     </li>
                                 @endif
                             @else
