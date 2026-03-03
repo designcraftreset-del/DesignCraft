@@ -55,7 +55,7 @@ class UserController extends Controller
             'name' => $user->name,
             'email' => $user->email,
             'role' => $user->role,
-            'avatar' => $user->avatar ? asset('storage/' . $user->avatar) : null,
+            'avatar' => $user->avatar ? upload_asset($user->avatar) : null,
             'created_at' => $user->created_at?->format('d.m.Y H:i'),
             'orders_count' => $user->orders_count ?? 0,
             'orders' => $user->orders->map(fn ($o) => [
@@ -103,10 +103,10 @@ class UserController extends Controller
             $user->role = $request->role;
         }
         if ($request->hasFile('avatar')) {
-            if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-                Storage::disk('public')->delete($user->avatar);
+            if ($user->avatar && Storage::disk('public_uploads')->exists($user->avatar)) {
+                Storage::disk('public_uploads')->delete($user->avatar);
             }
-            $user->avatar = $request->file('avatar')->store('avatars', 'public');
+            $user->avatar = $request->file('avatar')->store('avatars', 'public_uploads');
         }
         $user->save();
         return redirect()->back()->with('success', 'Профиль обновлён');

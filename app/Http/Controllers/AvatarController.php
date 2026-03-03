@@ -17,12 +17,12 @@ class AvatarController extends Controller
         $user = Auth::user();
 
 
-        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-            Storage::disk('public')->delete($user->avatar);
+        if ($user->avatar && Storage::disk('public_uploads')->exists($user->avatar)) {
+            Storage::disk('public_uploads')->delete($user->avatar);
         }
 
 
-        $avatarPath = $request->file('avatar')->store('avatars', 'public');
+        $avatarPath = $request->file('avatar')->store('avatars', 'public_uploads');
 
 
         $user->avatar = $avatarPath;
@@ -35,8 +35,8 @@ class AvatarController extends Controller
     {
         $user = Auth::user();
 
-        if ($user->avatar && Storage::disk('public')->exists($user->avatar)) {
-            Storage::disk('public')->delete($user->avatar);
+        if ($user->avatar && Storage::disk('public_uploads')->exists($user->avatar)) {
+            Storage::disk('public_uploads')->delete($user->avatar);
         }
 
         $user->avatar = null;

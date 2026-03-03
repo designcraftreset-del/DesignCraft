@@ -1220,7 +1220,7 @@
             <div class="news-single-image-news-single-image">
                 @if($news->image_path)
                 <div class="news-single-image">
-                    <img src="{{ asset('storage/' . $news->image_path) }}" alt="{{ $news->title }}">
+                    <img src="{{ upload_asset($news->image_path, 'image/placeholder.svg') }}" alt="{{ $news->title }}">
                 </div>
                 @endif
                 <div class="news-single-content-block">
@@ -1230,18 +1230,12 @@
                     <div class="news-single-footer">
                         <div class="news-author" style="display: flex; align-items: center; gap: 1rem; margin-bottom: 2rem;">
                             <div class="account-avatar">
-                                @if($news->user && $news->user->avatar)
-                                    <img src="{{ asset('storage/' . $news->user->avatar) }}" 
-                                        alt="Аватар" 
-                                        style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-                                @else
-                                    <img class="avatar" src="{{ asset('image/3/1.png') }}" alt="">
+                                <img class="avatar" src="{{ upload_asset($news->user->avatar ?? null, 'image/3/1.png') }}" alt="Аватар" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
                                     <style>
                                         .avatar{
                                             padding: 20px;
                                         }
                                     </style>
-                                @endif
                             </div>
                             <div class="author-info">
                                 <h4 style="font-size: 1.125rem; margin-bottom: 0.25rem;">{{ $news->author->name ?? 'Автор' }}</h4>
@@ -1264,7 +1258,7 @@
                 <article class="related-news-card">
                     <div class="related-news-image">
                         @if($related->image_path && Storage::disk('public')->exists($related->image_path))
-                            <img src="{{ asset('storage/' . $related->image_path) }}" alt="{{ $related->title }}">
+                            <img src="{{ upload_asset($related->image_path, 'image/placeholder.svg') }}" alt="{{ $related->title }}">
                         @else
                             <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #3B82F6, #1D4ED8); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
                                 <span></span>
@@ -1280,7 +1274,7 @@
                             <div class="related-news-author">
                                 <div class="related-author-avatar">
                                     @if($related->user && $related->user->avatar)
-                                        <img src="{{ asset('storage/' . $related->user->avatar) }}" 
+                                        <img src="{{ upload_asset($related->user->avatar ?? null, 'image/3/1.png') }}" 
                                             alt="Аватар" 
                                             style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
                                     @else

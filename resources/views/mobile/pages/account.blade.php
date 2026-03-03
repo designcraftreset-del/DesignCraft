@@ -14,7 +14,7 @@
     <div class="m-account-header">
         <button type="button" class="m-account-avatar-wrap" id="mAccountAvatarBtn" aria-label="Сменить аватарку">
             @if($user->avatar)
-                <img src="{{ asset('storage/' . $user->avatar) }}" alt="" class="m-account-avatar" id="mAccountAvatarImg">
+                <img src="{{ upload_asset($user->avatar, 'image/3/1.png') }}" alt="" class="m-account-avatar" id="mAccountAvatarImg">
             @else
                 <div class="m-account-avatar m-account-avatar--initials" id="mAccountAvatarInit">{{ mb_substr($user->name, 0, 1) }}</div>
             @endif
@@ -120,7 +120,7 @@
         <h3 class="m-title" style="margin:0 0 1rem;">Новая аватарка</h3>
         <p class="m-text" style="margin:0 0 0.75rem;">Как будет отображаться:</p>
         <div class="m-avatar-preview-wrap">
-            <img src="{{ $user->avatar ? asset('storage/' . $user->avatar) : '' }}" alt="" class="m-avatar-preview" id="mAvatarPreview" style="{{ $user->avatar ? '' : 'display:none;' }}">
+            <img src="{{ upload_asset($user->avatar, 'image/3/1.png') }}" alt="" class="m-avatar-preview" id="mAvatarPreview" style="{{ $user->avatar ? '' : 'display:none;' }}">
             <div class="m-account-avatar m-account-avatar--initials m-avatar-preview-initials" id="mAvatarPreviewInit" style="{{ $user->avatar ? 'display:none;' : '' }}">{{ mb_substr($user->name, 0, 1) }}</div>
         </div>
         <form action="{{ route('avatar.upload') }}" method="post" enctype="multipart/form-data" id="mAvatarForm">

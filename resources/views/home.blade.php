@@ -1324,7 +1324,7 @@
         <div class="hero_login_text">
             <div class="user-avatar-container">
                 @if(Auth::check() && Auth::user()->avatar)
-                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" 
+                    <img src="{{ upload_asset(Auth::user()->avatar, 'image/3/1.png') }}" 
                         alt="Аватар {{ Auth::user()->name }}" 
                         class="user-avatar"
                         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">

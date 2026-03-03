@@ -803,7 +803,7 @@
                     <div class="account-header">
                         <div class="account-avatar">
                             @if(Auth::user()->avatar)
-                                <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Аватар" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                                <img src="{{ upload_asset(Auth::user()->avatar, 'image/3/1.png') }}" alt="Аватар" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
                             @else
                                 {{ mb_substr(Auth::user()->name, 0, 1) }}{{ Auth::user()->name && strpos(Auth::user()->name, ' ') !== false ? mb_substr(Auth::user()->name, strpos(Auth::user()->name, ' ') + 1, 1) : '' }}
                             @endif
@@ -903,7 +903,7 @@
                         @if($order->preview_path)
                         <div class="order-preview-box" style="margin-top: 10px; padding: 10px; background: #f0f9ff; border-radius: 8px; border: 1px solid #bae6fd;">
                             <strong>Превью заказа:</strong>
-                            <a href="{{ asset('storage/' . $order->preview_path) }}" target="_blank" rel="noopener" style="display: inline-block; margin-top: 4px; color: #0369a1;">Открыть / скачать</a>
+                            <a href="{{ upload_asset($order->preview_path) }}" target="_blank" rel="noopener" style="display: inline-block; margin-top: 4px; color: #0369a1;">Открыть / скачать</a>
                         </div>
                         @endif
                     </div>
@@ -953,7 +953,7 @@
                         <div class="account-avatar-wrap">
                             <div class="account-avatar" id="profile-section-avatar">
                                 @if(Auth::user()->avatar)
-                                    <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Аватар" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                                    <img src="{{ upload_asset(Auth::user()->avatar, 'image/3/1.png') }}" alt="Аватар" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
                                 @else
                                     <span class="account-avatar-initials">{{ mb_substr(Auth::user()->name, 0, 1) }}{{ Auth::user()->name && strpos(Auth::user()->name, ' ') !== false ? mb_substr(Auth::user()->name, strpos(Auth::user()->name, ' ') + 1, 1) : '' }}</span>
                                 @endif
@@ -1007,7 +1007,7 @@
                     <div class="account-header">
                         <div class="account-avatar">
                             @if(Auth::user()->avatar)
-                                <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Аватар" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                                <img src="{{ upload_asset(Auth::user()->avatar, 'image/3/1.png') }}" alt="Аватар" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
                             @else
                                 {{ mb_substr(Auth::user()->name, 0, 1) }}{{ Auth::user()->name && strpos(Auth::user()->name, ' ') !== false ? mb_substr(Auth::user()->name, strpos(Auth::user()->name, ' ') + 1, 1) : '' }}
                             @endif
@@ -1027,7 +1027,7 @@
                     <div class="account-header">
                         <div class="account-avatar">
                             @if(Auth::user()->avatar)
-                                <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="Аватар" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                                <img src="{{ upload_asset(Auth::user()->avatar, 'image/3/1.png') }}" alt="Аватар" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
                             @else
                                 {{ mb_substr(Auth::user()->name, 0, 1) }}{{ Auth::user()->name && strpos(Auth::user()->name, ' ') !== false ? mb_substr(Auth::user()->name, strpos(Auth::user()->name, ' ') + 1, 1) : '' }}
                             @endif
@@ -1107,7 +1107,7 @@
                 <h3 class="avatar-crop-modal__title">Удалить аватар?</h3>
                 <div class="avatar-delete-modal-preview">
                     @if(Auth::user()->avatar)
-                        <img src="{{ asset('storage/' . Auth::user()->avatar) }}" alt="" style="max-width: 200px; max-height: 200px; border-radius: 50%; object-fit: cover;">
+                        <img src="{{ upload_asset(Auth::user()->avatar, 'image/3/1.png') }}" alt="" style="max-width: 200px; max-height: 200px; border-radius: 50%; object-fit: cover;">
                     @endif
                 </div>
                 <div class="avatar-crop-modal__actions">

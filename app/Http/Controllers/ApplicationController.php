@@ -87,7 +87,7 @@ class ApplicationController extends Controller
         if ($request->hasFile('photos')) {
             foreach ($request->file('photos') as $f) {
                 if ($f && $f->isValid()) {
-                    $photosPaths[] = $f->store('order_photos', 'public');
+                    $photosPaths[] = $f->store('order_photos', 'public_uploads');
                 }
             }
         }

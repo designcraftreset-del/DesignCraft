@@ -354,7 +354,7 @@
                     @if($news->image_path)
                     <div class="current-image">
                         <p style="margin-bottom: 0.5rem; font-size: 0.875rem; color: #6B7280;">Текущее изображение:</p>
-                        <img src="{{ asset('storage/' . $news->image_path) }}" alt="Текущее изображение" 
+                        <img src="{{ upload_asset($news->image_path) }}" alt="Текущее изображение" 
                             style="max-width: 300px; height: auto; border-radius: 8px; border: 2px solid #E5E7EB;">
                     </div>
                     @endif

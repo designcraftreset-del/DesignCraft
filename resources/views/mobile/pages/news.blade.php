@@ -33,7 +33,7 @@
     <a href="{{ route('mobile.news.show', $item->slug) }}" class="m-card" style="text-decoration:none; color:inherit; display:block;">
         <div class="m-img-wrap">
             @if($item->image_path)
-                <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->title }}" loading="lazy">
+                <img src="{{ upload_asset($item->image_path, 'image/placeholder.svg') }}" alt="{{ $item->title }}" loading="lazy">
             @else
                 <div style="width:100%; height:100%; background:var(--m-surface-2); display:flex; align-items:center; justify-content:center; color:var(--m-text-muted);">Новость</div>
             @endif
@@ -52,7 +52,7 @@
     <a href="{{ route('mobile.news.show', $item->slug) }}" class="m-card" style="text-decoration:none; color:inherit; display:block;">
         <div class="m-img-wrap" style="aspect-ratio:16/9;">
             @if($item->image_path)
-                <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->title }}" loading="lazy">
+                <img src="{{ upload_asset($item->image_path, 'image/placeholder.svg') }}" alt="{{ $item->title }}" loading="lazy">
             @else
                 <div style="width:100%; height:100%; background:var(--m-surface-2); display:flex; align-items:center; justify-content:center; color:var(--m-text-muted);">Новость</div>
             @endif

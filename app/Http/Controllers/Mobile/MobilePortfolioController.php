@@ -21,7 +21,7 @@ class MobilePortfolioController extends Controller
             $banners = Banner::approved()->byCategory($category)->get();
             foreach ($banners as $b) {
                 $galleryItems[] = [
-                    'path' => 'storage/' . $b->image_path,
+                    'path' => upload_relative_path($b->image_path),
                     'title' => $b->title ?? 'Работа',
                     'subtitle' => $b->subtitle ?? '',
                     'description' => $b->description ?? '',

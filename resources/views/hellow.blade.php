@@ -1650,7 +1650,7 @@
                 @foreach($banners as $banner)
                 <div class="portfolio_preview_card">
                     <a href="{{ route('portfolio') }}">
-                        <img src="{{ asset('storage/' . $banner->image_path) }}" alt="{{ $banner->title }}">
+                        <img src="{{ upload_asset($banner->image_path) }}" alt="{{ $banner->title }}">
                         <p class="portfolio_preview_title">{{ $banner->title }}</p>
                         <p class="portfolio_preview_subtitle">{{ $banner->subtitle }}</p>
                     </a>
@@ -2419,13 +2419,7 @@
                 @foreach($regularItems as $item)
                     <article class="news-card">
                         <div class="news-image">
-                            @if($item->image_path && Storage::disk('public')->exists($item->image_path))
-                                <img src="{{ asset('storage/' . $item->image_path) }}" alt="{{ $item->title }}">
-                            @else
-                                <div style="width: 100%; height: 100%; background: linear-gradient(135deg, #3B82F6, #1D4ED8); display: flex; align-items: center; justify-content: center; color: white; font-weight: 600;">
-                                    <span></span>
-                                </div>
-                            @endif
+                            <img src="{{ upload_asset($item->image_path, 'image/placeholder.svg') }}" alt="{{ $item->title }}">
                             <div class="news-category">{{ $item->category }}</div>
                             <div class="news-date">{{ $item->published_at->format('d M Y') }}</div>
                         </div>
@@ -2435,13 +2429,7 @@
                             <div class="news-meta">
                                 <div class="news-author">
                                     <div class="account-avatar-account-avatar">
-                                        @if($item->user && $item->user->avatar)
-                                            <img src="{{ asset('storage/' . $item->user->avatar) }}" 
-                                                alt="Аватар" 
-                                                style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
-                                        @else
-                                            <img class="avatar" src="{{ asset('image/3/1.png') }}" alt="Аватар по умолчанию">
-                                        @endif
+                                        <img class="avatar" src="{{ upload_asset($item->user->avatar ?? null, 'image/3/1.png') }}" alt="Аватар" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
                                     </div>
                                     <div class="author-info">
                                         <h4>{{ $item->user->name ?? ($item->author->name ?? 'Автор') }}</h4>

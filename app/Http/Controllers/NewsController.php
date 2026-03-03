@@ -127,7 +127,7 @@ class NewsController extends Controller
 
         $imagePath = null;
         if ($request->hasFile('image')) {
-            $imagePath = $request->file('image')->store('news', 'public');
+            $imagePath = $request->file('image')->store('news', 'public_uploads');
         }
 
         // Генерируем уникальный slug
@@ -206,12 +206,12 @@ class NewsController extends Controller
         if ($request->hasFile('image')) {
             if ($news->image_path) {
                 try {
-                    Storage::disk('public')->delete($news->image_path);
+                    Storage::disk('public_uploads')->delete($news->image_path);
                 } catch (\Throwable $e) {
                     // файл мог отсутствовать (например после перезапуска на Render)
                 }
             }
-            $news->image_path = $request->file('image')->store('news', 'public');
+            $news->image_path = $request->file('image')->store('news', 'public_uploads');
         }
 
         $publishedAt = $request->filled('published_at') ? $request->published_at : null;
@@ -237,7 +237,7 @@ class NewsController extends Controller
 
         if ($news->image_path) {
             try {
-                Storage::disk('public')->delete($news->image_path);
+                Storage::disk('public_uploads')->delete($news->image_path);
             } catch (\Throwable $e) {
                 // не ломаем удаление новости, если файла нет
             }

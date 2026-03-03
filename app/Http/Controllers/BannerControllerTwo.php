@@ -48,7 +48,7 @@ class BannerControllerTwo extends Controller
             'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
         ]);
 
-        $imagePath = $request->file('image')->store('banners', 'public');
+        $imagePath = $request->file('image')->store('banners', 'public_uploads');
 
         $user = Auth::user();
         $isApproved = in_array($user->role, ['admin', 'moderator']);
@@ -77,7 +77,7 @@ class BannerControllerTwo extends Controller
         }
 
 
-        Storage::disk('public')->delete($banner->image_path);
+        Storage::disk('public_uploads')->delete($banner->image_path);
         
         $banner->delete();
 

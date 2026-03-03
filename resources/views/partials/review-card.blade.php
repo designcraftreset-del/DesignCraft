@@ -2,7 +2,7 @@
     <div class="review-card__header">
         <div class="review-card__avatar">
             @if(isset($review->user) && $review->user && $review->user->avatar)
-                <img src="{{ asset('storage/' . $review->user->avatar) }}" alt="" loading="lazy">
+                <img src="{{ upload_asset($review->user->avatar ?? null, 'image/3/1.png') }}" alt="" loading="lazy">
             @else
                 <span class="review-card__initials">{{ mb_strtoupper(mb_substr($review->client_name ?? '?', 0, 1)) }}</span>
             @endif

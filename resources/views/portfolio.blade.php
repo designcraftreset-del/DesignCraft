@@ -337,7 +337,7 @@
                 <div class="banners">
                     @forelse($banners as $banner)
                     <div class="banner" data-categories="{{ $banner->category }}">
-                        <div class="conten_block_portfolio_text___hover" onclick="openBannerModal('{{ asset('storage/' . $banner->image_path) }}', '{{ $banner->title }}', '{{ $banner->description }}')">
+                        <div class="conten_block_portfolio_text___hover" onclick="openBannerModal('{{ upload_asset($banner->image_path) }}', '{{ addslashes(e($banner->title)) }}', '{{ addslashes(e($banner->description)) }}')">
                             <div class="conten_block_portfolio_text_svggggggg____block">
                                 <p class="conten_block_portfolio_text">{{ $banner->title }}</p>
                                 <p class="conten_block_portfolio_text_two">{{ $banner->subtitle }}</p>
@@ -372,7 +372,7 @@
                             </div>
                         </div>
                         <div class="banner-img">
-                            <img class="banner---img" src="{{ asset('storage/' . $banner->image_path) }}" alt="{{ $banner->title }}">
+                            <img class="banner---img" src="{{ upload_asset($banner->image_path) }}" alt="{{ $banner->title }}">
                         </div>
                     </div>
 

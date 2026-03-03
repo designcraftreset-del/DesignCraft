@@ -175,7 +175,7 @@
                         </td>
                         <td class="moder-preview-cell">
                             @if($order->preview_path)
-                                <a href="{{ asset('storage/' . $order->preview_path) }}" target="_blank" rel="noopener" class="moder-link">Превью</a>
+                                <a href="{{ upload_asset($order->preview_path) }}" target="_blank" rel="noopener" class="moder-link">Превью</a>
                             @else
                                 <span class="moder-muted">—</span>
                             @endif
@@ -185,11 +185,11 @@
                                 $sourcesList = [];
                                 if ($order->photos_paths && is_array($order->photos_paths)) {
                                     foreach ($order->photos_paths as $i => $p) {
-                                        $sourcesList[] = ['url' => asset('storage/' . $p), 'label' => 'Фото ' . ($i + 1), 'img' => true];
+                                        $sourcesList[] = ['url' => upload_asset($p), 'label' => 'Фото ' . ($i + 1), 'img' => true];
                                     }
                                 }
                                 if ($order->sources_path) {
-                                    $sourcesList[] = ['url' => asset('storage/' . $order->sources_path), 'label' => 'Исходник', 'img' => preg_match('/\.(jpe?g|png|gif|webp)$/i', $order->sources_path)];
+                                    $sourcesList[] = ['url' => upload_asset($order->sources_path), 'label' => 'Исходник', 'img' => preg_match('/\.(jpe?g|png|gif|webp)$/i', $order->sources_path)];
                                 }
                             @endphp
                             @if(count($sourcesList) > 0)

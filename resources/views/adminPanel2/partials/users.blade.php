@@ -53,7 +53,7 @@
                     data-name="{{ e($u->name) }}"
                     data-email="{{ e($u->email) }}"
                     data-role="{{ $u->role ?? 'user' }}"
-                    data-avatar="{{ $u->avatar ? asset('storage/' . $u->avatar) : '' }}"
+                    data-avatar="{{ $u->avatar ? upload_asset($u->avatar) : '' }}"
                     data-created="{{ $u->created_at?->format('d.m.Y H:i') ?? '' }}"
                     data-orders-count="{{ $u->orders_count ?? 0 }}">
                     <td class="px-5 py-3">{{ $u->id }}</td>
