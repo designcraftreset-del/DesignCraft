@@ -41,6 +41,46 @@ Route::get('/import-db', function (Request $request) {
     return response($body, 200, ['Content-Type' => 'text/plain; charset=utf-8']);
 });
 
+// Перенос фото новостей в public/uploads (для Render, где нет Shell). В Environment: MIGRATE_NEWS_IMAGES_TOKEN=секрет. Откройте /migrate-news-images?token=секрет один раз, затем удалите переменную.
+Route::get('/migrate-news-images', function (Request $request) {
+    $token = env('MIGRATE_NEWS_IMAGES_TOKEN');
+    if (!$token || $request->query('token') !== $token) {
+        abort(404);
+    }
+    $storageRoot = storage_path('app/public');
+    $publicRoot = public_path('uploads');
+    $news = \App\Models\News::whereNotNull('image_path')->where('image_path', '!=', '')->get();
+    $lines = [];
+    $copied = 0;
+    $skipped = 0;
+    $missing = 0;
+    foreach ($news as $item) {
+        $path = ltrim(str_replace('\\', '/', $item->image_path), '/');
+        $src = $storageRoot . '/' . $path;
+        $dst = $publicRoot . '/' . $path;
+        if (file_exists($dst)) {
+            $skipped++;
+            continue;
+        }
+        if (!file_exists($src)) {
+            $missing++;
+            $lines[] = "Нет файла: {$path}";
+            continue;
+        }
+        \Illuminate\Support\Facades\File::ensureDirectoryExists(dirname($dst));
+        if (@copy($src, $dst)) {
+            $copied++;
+            $lines[] = "Скопировано: {$path}";
+        } else {
+            $lines[] = "Ошибка: {$path}";
+        }
+    }
+    $lines[] = '';
+    $lines[] = "Готово. Скопировано: {$copied}, уже было в uploads: {$skipped}, нет в storage: {$missing}.";
+    $lines[] = 'Удалите MIGRATE_NEWS_IMAGES_TOKEN из Environment.';
+    return response(implode("\n", $lines), 200, ['Content-Type' => 'text/plain; charset=utf-8']);
+});
+
 // Одноразовый создатель админа (для Render Free, где нет Shell). Установите в Environment: SETUP_ADMIN_TOKEN=ваш_секрет. Откройте /setup-admin?token=ваш_секрет один раз, затем удалите SETUP_ADMIN_TOKEN.
 Route::get('/setup-admin', function (Request $request) {
     $token = env('SETUP_ADMIN_TOKEN');

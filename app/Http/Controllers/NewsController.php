@@ -7,6 +7,7 @@ use App\Models\Application;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\File;
 
 class NewsController extends Controller
 {
@@ -146,9 +147,10 @@ class NewsController extends Controller
             'published_at' => 'nullable|date'
         ]);
 
-        // Фото сохраняются в public/uploads/news/ (диск public_uploads) — так они не пропадают на Render и отображаются через upload_asset()
+        // Фото сохраняются в папке сайта public/uploads/news/ — отображаются на сайте и не пропадают при перезапуске
         $imagePath = null;
         if ($request->hasFile('image')) {
+            File::ensureDirectoryExists(public_path('uploads/news'));
             $imagePath = $request->file('image')->store('news', 'public_uploads');
         }
 
@@ -233,6 +235,7 @@ class NewsController extends Controller
                     // файл мог отсутствовать (например после перезапуска на Render)
                 }
             }
+            File::ensureDirectoryExists(public_path('uploads/news'));
             $news->image_path = $request->file('image')->store('news', 'public_uploads');
         }
 

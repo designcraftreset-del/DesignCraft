@@ -8,6 +8,7 @@ use App\Models\Review;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Database\QueryException;
 
 class HomeController extends Controller
 {
@@ -33,32 +34,44 @@ class HomeController extends Controller
             ]);
         }
 
-        // Статистика пользователя (только для авторизованных)
-        $userStats = [
-            'total_orders' => Application::where('userid', $user->id)->count(),
-            'orders_this_month' => Application::where('userid', $user->id)
-                ->whereMonth('created_at', now()->month)
-                ->count(),
-            'active_projects' => Application::where('userid', $user->id)
-                ->whereIn('status', ['pending', 'confirmed'])
-                ->count(),
-            'completed_projects' => Application::where('userid', $user->id)
-                ->where('status', 'completed')
-                ->count(),
-            'account_balance' => 0,
-            'total_reviews' => Review::where('user_id', $user->id)->count(),
-            'average_rating' => Review::where('user_id', $user->id)
-                ->avg('rating') ?? 0
-        ];
+        // Статистика и заказы — при повреждённой таблице applications не падаем с 500
+        try {
+            $userStats = [
+                'total_orders' => Application::where('userid', $user->id)->count(),
+                'orders_this_month' => Application::where('userid', $user->id)
+                    ->whereMonth('created_at', now()->month)
+                    ->count(),
+                'active_projects' => Application::where('userid', $user->id)
+                    ->whereIn('status', ['pending', 'confirmed'])
+                    ->count(),
+                'completed_projects' => Application::where('userid', $user->id)
+                    ->where('status', 'completed')
+                    ->count(),
+                'account_balance' => 0,
+                'total_reviews' => Review::where('user_id', $user->id)->count(),
+                'average_rating' => Review::where('user_id', $user->id)
+                    ->avg('rating') ?? 0
+            ];
+            $recentOrders = Application::where('userid', $user->id)
+                ->orderBy('created_at', 'desc')
+                ->take(3)
+                ->get();
+        } catch (QueryException $e) {
+            \Log::warning('HomeController: applications table unavailable: ' . $e->getMessage());
+            $userStats = [
+                'total_orders' => 0,
+                'orders_this_month' => 0,
+                'active_projects' => 0,
+                'completed_projects' => 0,
+                'account_balance' => 0,
+                'total_reviews' => Review::where('user_id', $user->id)->count(),
+                'average_rating' => Review::where('user_id', $user->id)->avg('rating') ?? 0
+            ];
+            $recentOrders = collect();
+        }
 
         // Последние новости
         $recentNews = News::orderBy('created_at', 'desc')
-            ->take(3)
-            ->get();
-
-        // Последние заказы пользователя (только для авторизованных)
-        $recentOrders = Application::where('userid', $user->id)
-            ->orderBy('created_at', 'desc')
             ->take(3)
             ->get();
 
